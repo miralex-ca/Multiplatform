@@ -3,6 +3,7 @@ package com.muralex.multiplatform.viewmodel
 import com.muralex.multiplatform.viewmodel.screens.Level1Navigation
 import com.muralex.multiplatform.viewmodel.screens.Screen
 import com.muralex.multiplatform.viewmodel.screens.ScreenInitSettings
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
@@ -44,6 +45,7 @@ class ScreenIdentifier private constructor(
     }
 
     // unlike the "params" property, this reified function returns the specific type and not the generic "ScreenParams" interface type
+    @OptIn(ExperimentalSerializationApi::class)
     inline fun <reified T: ScreenParams> params() : T {
         if (params == null && paramsAsString != null) {
             val jsonValues = paramsStrToJson(paramsAsString!!)

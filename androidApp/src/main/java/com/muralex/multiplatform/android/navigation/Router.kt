@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Bookmarks
-import androidx.compose.material.icons.outlined.Chat
-import androidx.compose.material.icons.outlined.Newspaper
-import androidx.compose.material.icons.outlined.Videocam
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.SaveableStateHolder
@@ -22,11 +19,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ShareCompat
 import com.muralex.multiplatform.android.R
 import com.muralex.multiplatform.viewmodel.Navigation
 import com.muralex.multiplatform.viewmodel.ScreenIdentifier
 import com.muralex.multiplatform.viewmodel.screens.Level1Navigation
 import com.muralex.multiplatform.viewmodel.screens.Screen
+import com.muralex.multiplatform.viewmodel.screens.appsettings.AppSettingsParams
+import com.muralex.multiplatform.viewmodel.screens.articledetail.ArticleDetail
+import com.muralex.multiplatform.viewmodel.screens.webviewdetail.ArticleWebviewParams
 
 @Composable
 fun Navigation.Router() {
@@ -42,7 +43,6 @@ fun Navigation.Router() {
     if (!only1ScreenInBackstack) {
         HandleBackButton()
     }
-
 }
 
 @Composable
@@ -66,30 +66,32 @@ fun Navigation.OnePane(
         Scaffold(
             topBar = {
                 when (currentScreenIdentifier.screen) {
-                    Screen.ArticleDetail -> {
-                        TopBarLevel2(
-                            title = "Source",
-                            onBack = {
-                                exitScreen(triggerRecomposition = true)
+                    Screen.ArticlesList,
+                    Screen.FavoriteArticlesList,
+                    -> {
+                        TopBar(
+                            title = getTitle(currentScreenIdentifier),
+                            onSettingsClick = {
+                                navigate( Screen.AppSettings, AppSettingsParams("Settings"))
                             }
                         )
                     }
-                    else -> {
-                        TopBar(title = getTitle(currentScreenIdentifier))
-                    }
+                    else -> {}
                 }
-
             },
 
             content = { innerPadding ->
-                Column(Modifier.padding(innerPadding)) {
+                Column(
+                    Modifier.padding(innerPadding)
+                ) {
                     saveableStateHolder.SaveableStateProvider(currentScreenIdentifier.URI) {
                         ScreenPicker(currentScreenIdentifier)
                     }
                 }
             },
             bottomBar = {
-                if (currentScreenIdentifier.screen.navigationLevel == 1)  Level1BottomBar(currentScreenIdentifier)
+                if (currentScreenIdentifier.screen.navigationLevel == 1) Level1BottomBar(
+                    currentScreenIdentifier)
             }
         )
     }
@@ -131,30 +133,30 @@ fun Navigation.Level1BottomBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    title : String
-){
-    TopAppBar(title = {
-        Text(text = title, fontSize = 20.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-    })
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBarLevel2(
-    title : String,
-    onBack: () -> Unit
-){
-    TopAppBar(
-        title = {Text(text = title, fontSize = 18.sp)},
-        navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
+    title: String,
+    onSettingsClick: () -> Unit = {}
+) {
+    CenterAlignedTopAppBar(title = {
+        Text(text = title,
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth())
+    },
+        actions = {
+            IconButton(onClick = onSettingsClick) {
+                Icon(
+                    imageVector = Icons.Outlined.Settings,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
             }
         }
 
     )
 }
+
+
+
 
 
 

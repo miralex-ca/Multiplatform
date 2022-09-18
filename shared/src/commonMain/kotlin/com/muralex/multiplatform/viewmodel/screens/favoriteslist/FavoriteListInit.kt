@@ -3,7 +3,6 @@ package com.muralex.multiplatform.viewmodel.screens.favoriteslist
 import com.muralex.multiplatform.datalayer.functions.getFavoriteListData
 import com.muralex.multiplatform.viewmodel.Navigation
 import com.muralex.multiplatform.viewmodel.screens.ScreenInitSettings
-import com.muralex.multiplatform.viewmodel.screens.articleslist.FavoriteListState
 
 // INIZIALIZATION settings for this screen
 // this is what should be implemented:

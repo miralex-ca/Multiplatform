@@ -49,10 +49,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-common-java8:2.5.1")
     implementation ("androidx.compose.material:material-icons-extended:1.2.1")
     implementation ("androidx.compose.material3:material3:1.0.0-beta02")
+    implementation("androidx.compose.material3:material3-window-size-class:1.0.0-beta02")
 
     implementation ("com.google.accompanist:accompanist-coil:0.12.0")
     implementation("io.coil-kt:coil-compose:2.1.0")
     implementation("io.coil-kt:coil:2.1.0")
+
+    implementation ("com.google.accompanist:accompanist-webview:0.26.3-beta")
 
 
 }

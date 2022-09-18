@@ -1,6 +1,7 @@
 package eu.baroncelli.dkmpsample.composables.screens.countrieslist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.clipScrollableContainer
 import androidx.compose.foundation.gestures.Orientation
@@ -83,15 +84,16 @@ fun ArticleListItem(
     favorite: Boolean = true,
     onItemClick: () -> Unit,
 ) {
-    Card(
+     Card(
         modifier = Modifier
-            .padding(horizontal = 12.dp, vertical = 4.dp)
-            .clickable(onClick = onItemClick),
+            .padding(horizontal = 12.dp, vertical = 4.dp),
+        onClick = onItemClick
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp)
+
         ) {
 
             Row(

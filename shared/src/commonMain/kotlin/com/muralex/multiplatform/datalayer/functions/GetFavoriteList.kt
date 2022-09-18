@@ -2,9 +2,7 @@ package com.muralex.multiplatform.datalayer.functions
 
 import com.muralex.multiplatform.datalayer.Repository
 import com.muralex.multiplatform.datalayer.objects.ArticlesListData
-import com.muralex.multiplatform.viewmodel.screens.articleslist.ArticlesListItem
-import com.muralex.multiplatform.datalayer.sources.webservices.apis.fetchNewsList
-import com.muralex.multiplatform.viewmodel.screens.articleslist.FavoriteListItem
+import com.muralex.multiplatform.viewmodel.screens.favoriteslist.FavoriteListItem
 
 suspend fun Repository.getFavoriteListData(): List<FavoriteListItem> = withRepoContext {
    // emptyList()

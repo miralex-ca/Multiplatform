@@ -88,7 +88,6 @@ class StateManager(repo: Repository) {
         }
     }
 
-
     fun triggerRecomposition() {
         mutableStateFlow.value = AppState(mutableStateFlow.value.recompositionIndex+1)
     }
@@ -141,7 +140,6 @@ class StateManager(repo: Repository) {
         }
         currentVerticalNavigationLevelsMap[screenIdentifier.screen.navigationLevel] = screenIdentifier
     }
-
 
 
 

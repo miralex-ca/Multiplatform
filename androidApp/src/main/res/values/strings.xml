@@ -14,4 +14,12 @@
     <string name="tab_home">News</string>
     <string name="tab_fav">Bookmarks</string>
 
+    <string name="menu_share">Share</string>
+    <string name="menu_open_source">Open source</string>
+    <string name="btn_open_source">OPEN SOURCE</string>
+    <string name="text_share">Share</string>
+    <string name="text_share_app">Share this app</string>
+    <string name="share_url">Hi! Check this link: \n</string>
+    <string name="settings">Settings</string>
+
 </resources>

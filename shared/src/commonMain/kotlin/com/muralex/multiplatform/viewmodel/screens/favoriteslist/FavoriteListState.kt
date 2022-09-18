@@ -1,4 +1,4 @@
-package com.muralex.multiplatform.viewmodel.screens.articleslist
+package com.muralex.multiplatform.viewmodel.screens.favoriteslist
 
 import com.muralex.multiplatform.datalayer.objects.ArticlesListData
 import com.muralex.multiplatform.viewmodel.ScreenState

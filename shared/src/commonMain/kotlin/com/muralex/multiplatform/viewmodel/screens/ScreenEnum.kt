@@ -2,7 +2,9 @@ package com.muralex.multiplatform.viewmodel.screens
 
 import com.muralex.multiplatform.viewmodel.Navigation
 import com.muralex.multiplatform.viewmodel.ScreenIdentifier
+import com.muralex.multiplatform.viewmodel.screens.appsettings.initAppSettings
 import com.muralex.multiplatform.viewmodel.screens.articledetail.initArticleDetail
+import com.muralex.multiplatform.viewmodel.screens.webviewdetail.initWebviewDetail
 import com.muralex.multiplatform.viewmodel.screens.articleslist.initArticlesList
 import com.muralex.multiplatform.viewmodel.screens.favoriteslist.initFavoriteList
 
@@ -16,6 +18,8 @@ enum class Screen(
     val stackableInstances : Boolean = false,
 ) {
     ArticlesList("articleslist", 1, { initArticlesList(it.params()) }, true),
-    ArticleDetail("article", 2, { initArticleDetail(it.params()) }),
+    ArticleDetail("articledetail", 2, { initArticleDetail(it.params()) }),
+    ArticleWebview("articleWebview", 2, { initWebviewDetail(it.params()) }),
     FavoriteArticlesList("favoritelist", 1, { initFavoriteList() }, true),
+    AppSettings("appsettings", 2, { initAppSettings( it.params()) }),
 }

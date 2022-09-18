@@ -1,37 +1,25 @@
 package eu.baroncelli.dkmpsample.composables.screens.countrieslist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.clipScrollableContainer
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.R
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.request.ImageRequest
-import com.muralex.multiplatform.viewmodel.screens.articleslist.ArticlesListItem
-import com.muralex.multiplatform.viewmodel.screens.articleslist.ArticlesListState
 import coil.compose.AsyncImage
-import com.muralex.multiplatform.viewmodel.screens.articleslist.FavoriteListItem
-import com.muralex.multiplatform.viewmodel.screens.articleslist.FavoriteListState
+import com.muralex.multiplatform.viewmodel.screens.favoriteslist.FavoriteListItem
+import com.muralex.multiplatform.viewmodel.screens.favoriteslist.FavoriteListState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -84,15 +72,14 @@ fun FavoriteListItem(
 ) {
     Card(
         modifier = Modifier
-            .padding(horizontal = 12.dp, vertical = 4.dp)
-            .clickable(onClick = onItemClick),
+            .padding(horizontal = 12.dp, vertical = 4.dp),
+        onClick = onItemClick
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp)
         ) {
-
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
