@@ -37,7 +37,7 @@ import com.muralex.multiplatform.viewmodel.screens.articledetail.ArticleDetailSt
 @Composable
 fun ArticleDetailScreen(
     articleState: ArticleDetailState,
-    openInBrowser: () -> Unit = {},
+    openInBrowser: (String) -> Unit = { },
     exitScreen: () -> Unit,
 ) {
 
@@ -51,7 +51,7 @@ fun ArticleDetailScreen(
 @Composable
 fun ArticleDetailItem(
     item: ArticleDetail,
-    openInBrowser: () -> Unit = {},
+    openInBrowser: (String) -> Unit = {},
     exitScreen: () -> Unit,
 ) {
 
@@ -59,10 +59,11 @@ fun ArticleDetailItem(
 
     Column {
         TopBarLevel2(
+            title = item._data.source,
             isFavorite = item.isFavorite,
             onBackClick = exitScreen,
             onMenuShareItemSelected = { share(shareContext, item._data.url) },
-            onMenuOpenItemSelected = openInBrowser,
+            onMenuOpenItemSelected = {openInBrowser.invoke(item._data.title)},
         )
 
         val state = remember {
@@ -87,7 +88,7 @@ fun ArticleDetailItem(
 @Composable
 private fun DetailContent(
     item: ArticleDetail,
-    openInBrowser: () -> Unit = {},
+    openInBrowser: (String) -> Unit = {},
 ) {
     Box(
         modifier = Modifier
@@ -107,7 +108,7 @@ private fun DetailContent(
 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(item._data.imageUrl)
+                        .data(item._data.image)
                         .crossfade(true)
                         .build(),
                     contentDescription = item._data.title,
@@ -139,8 +140,7 @@ private fun DetailContent(
                     )
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        text =
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vulputate urna in neque facilisis, vitae fermentum est sollicitudin. Mauris nec maximus enim, sed aliquam ante. Nunc purus dolor, sollicitudin et aliquet non, commodo ac lorem. ",
+                        text = item._data.text,
                         fontWeight = FontWeight.Light,
                         fontSize = 15.sp
                     )
@@ -152,7 +152,7 @@ private fun DetailContent(
                     ) {
 
                         TextButton(
-                            onClick = openInBrowser,
+                            onClick = { openInBrowser.invoke(item._data.title) },
                         ) {
                             Text(
                                 text = stringResource(id = R.string.btn_open_source)
@@ -180,7 +180,7 @@ fun TopBarLevel2(
     isFavorite: Boolean = false,
     onBackClick: () -> Unit,
     onMenuShareItemSelected: () -> Unit = {},
-    onMenuOpenItemSelected: () -> Unit = {},
+    onMenuOpenItemSelected: (String) -> Unit = {},
     onBookmarkClicked: () -> Unit = {},
 ) {
     var mDisplayMenu by remember { mutableStateOf(false) }
@@ -224,7 +224,7 @@ fun TopBarLevel2(
                 )
                 DropdownMenuItem(
                     onClick = {
-                        onMenuOpenItemSelected.invoke()
+                        onMenuOpenItemSelected.invoke(title)
                         mDisplayMenu = false
                     },
                     text = {

@@ -6,12 +6,6 @@ import com.muralex.multiplatform.viewmodel.ScreenParams
 import com.muralex.multiplatform.viewmodel.screens.ScreenInitSettings
 import kotlinx.serialization.Serializable
 
-// INIZIALIZATION settings for this screen
-// this is what should be implemented:
-// - a data class implementing the ScreenParams interface, which defines the parameters to the passed to the screen
-// - Navigation extension function taking the ScreenParams class as an argument, return the ScreenInitSettings for this screen
-// to understand the initialization behaviour, read the comments in the ScreenInitSettings.kt file
-
 @Serializable // Note: ScreenParams should always be set as Serializable
 data class ArticlesListParams(val listType: ArticlesListType) : ScreenParams
 
@@ -25,7 +19,7 @@ fun Navigation.initArticlesList(params: ArticlesListParams) = ScreenInitSettings
         stateManager.updateScreen(ArticlesListState::class) {
             it.copy(
                 isLoading = false,
-                articlesListItems = listData,
+                articlesListItems = listData.map { ArticlesListItem(it) }
             )
         }
     },

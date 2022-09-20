@@ -10,7 +10,7 @@ import com.muralex.multiplatform.viewmodel.screens.articledetail.ArticleDetailPa
 import com.muralex.multiplatform.viewmodel.screens.webviewdetail.ArticleWebviewParams
 import com.muralex.multiplatform.android.navigation.ArticleDetailScreen
 import eu.baroncelli.dkmpsample.composables.screens.countrieslist.ArticleWebViewScreen
-import eu.baroncelli.dkmpsample.composables.screens.countrieslist.ArticlesListScreen
+import com.muralex.multiplatform.android.navigation.ArticlesListScreen
 import eu.baroncelli.dkmpsample.composables.screens.countrieslist.FavoriteListScreen
 
 
@@ -32,7 +32,9 @@ fun Navigation.ScreenPicker(
         Screen.ArticleDetail ->
             ArticleDetailScreen(
                 articleState = stateProvider.get(screenIdentifier),
-                openInBrowser = { navigate( Screen.ArticleWebview, ArticleWebviewParams("")) },
+                openInBrowser = { title ->
+                    navigate( Screen.ArticleWebview, ArticleWebviewParams(title))
+                                },
                 exitScreen = { exitScreen(triggerRecomposition = true) }
             )
 
@@ -50,9 +52,9 @@ fun Navigation.ScreenPicker(
 
         else -> ArticlesListScreen(
             countriesListState = stateProvider.get(screenIdentifier),
-            onListItemClick = {
+            onListItemClick = { title ->
                 navigate(Screen.ArticleDetail,
-                    ArticleDetailParams("Lorem ipsum dolor"))
+                    ArticleDetailParams(title))
             },
         )
 

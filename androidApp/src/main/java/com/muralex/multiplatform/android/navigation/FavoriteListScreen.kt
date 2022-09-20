@@ -88,7 +88,7 @@ fun FavoriteListItem(
 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(item._data.imageUrl)
+                        .data(item._data.image)
                         .crossfade(true)
                         .build(),
                     contentDescription = item.name,

@@ -20,6 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ShareCompat
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.ModalBottomSheetLayout
+import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.muralex.multiplatform.android.R
 import com.muralex.multiplatform.viewmodel.Navigation
 import com.muralex.multiplatform.viewmodel.ScreenIdentifier
@@ -53,50 +56,60 @@ fun Navigation.HandleBackButton() {
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialNavigationApi::class)
 @Composable
 fun Navigation.OnePane(
     saveableStateHolder: SaveableStateHolder,
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.inverseOnSurface)
-    ) {
 
-        Scaffold(
-            topBar = {
-                when (currentScreenIdentifier.screen) {
-                    Screen.ArticlesList,
-                    Screen.FavoriteArticlesList,
-                    -> {
-                        TopBar(
-                            title = getTitle(currentScreenIdentifier),
-                            onSettingsClick = {
-                                navigate( Screen.AppSettings, AppSettingsParams("Settings"))
-                            }
-                        )
-                    }
-                    else -> {}
-                }
-            },
 
-            content = { innerPadding ->
-                Column(
-                    Modifier.padding(innerPadding)
-                ) {
-                    saveableStateHolder.SaveableStateProvider(currentScreenIdentifier.URI) {
-                        ScreenPicker(currentScreenIdentifier)
+    val bottomSheetNavigator = rememberBottomSheetNavigator()
+    ModalBottomSheetLayout(bottomSheetNavigator) {
+
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.inverseOnSurface)
+        ) {
+
+            Scaffold(
+                topBar = {
+                    when (currentScreenIdentifier.screen) {
+                        Screen.ArticlesList,
+                        Screen.FavoriteArticlesList,
+                        -> {
+                            TopBar(
+                                title = getTitle(currentScreenIdentifier),
+                                onSettingsClick = {
+                                    navigate(Screen.AppSettings, AppSettingsParams("Settings"))
+                                }
+                            )
+                        }
+                        else -> {}
                     }
+                },
+
+                content = { innerPadding ->
+                    Column(
+                        Modifier.padding(innerPadding)
+                    ) {
+                        saveableStateHolder.SaveableStateProvider(currentScreenIdentifier.URI) {
+                            ScreenPicker(currentScreenIdentifier)
+                        }
+                    }
+                },
+                bottomBar = {
+                    if (currentScreenIdentifier.screen.navigationLevel == 1) Level1BottomBar(
+                        currentScreenIdentifier)
                 }
-            },
-            bottomBar = {
-                if (currentScreenIdentifier.screen.navigationLevel == 1) Level1BottomBar(
-                    currentScreenIdentifier)
-            }
-        )
+            )
+        }
+
+
+
     }
-
 }
+
+
 
 
 @Composable
@@ -134,7 +147,7 @@ fun Navigation.Level1BottomBar(
 @Composable
 fun TopBar(
     title: String,
-    onSettingsClick: () -> Unit = {}
+    onSettingsClick: () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(title = {
         Text(text = title,

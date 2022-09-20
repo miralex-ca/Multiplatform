@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("com.android.library")
-    kotlin("plugin.serialization") version "1.4.21"
+    kotlin("plugin.serialization")
 }
 
 kotlin {
@@ -23,16 +23,22 @@ kotlin {
     }
     
     sourceSets {
+        val ktorVersion = "2.1.1"
+
         val commonMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
                 implementation("com.russhwolf:multiplatform-settings-no-arg:0.7.7")
-                implementation("io.ktor:ktor-client-core:1.6.0")
-                implementation("io.ktor:ktor-client-json:1.6.0")
-                implementation("io.ktor:ktor-client-logging:1.6.0")
-                implementation("io.ktor:ktor-client-serialization:1.6.0")
+
+                implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("io.ktor:ktor-client-serialization:$ktorVersion")
+                implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+                implementation("io.ktor:ktor-client-json:$ktorVersion")
+                implementation("io.ktor:ktor-client-logging:$ktorVersion")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+
             }
         }
         val commonTest by getting {
@@ -40,7 +46,11 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+            }
+        }
         val androidTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting

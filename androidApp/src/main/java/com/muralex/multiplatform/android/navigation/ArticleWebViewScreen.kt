@@ -66,12 +66,7 @@ private fun ArticleWebViewContent(item: ArticleWebviewData) {
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-
-
-
-
-
-        LoadWebUrl("https://www.cbc.ca/news")
+        LoadWebUrl(item._data.url)
     }
 }
 

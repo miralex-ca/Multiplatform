@@ -1,0 +1,88 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="260dp"
+            android:height="260dp"
+            android:viewportWidth="260"
+            android:viewportHeight="260">
+            <group
+                android:name="group_1"
+                android:pivotX="54"
+                android:pivotY="54"
+                android:translateX="75"
+                android:translateY="75">
+                <path
+                    android:name="path_1"
+                    android:pathData="M 0 54 C 0 24.177 24.177 0 54 0 C 83.823 0 108 24.177 108 54 C 108 83.823 83.823 108 54 108 C 24.177 108 0 83.823 0 54 Z"
+                    android:fillColor="#e0eaf3"
+                    android:strokeWidth="1"/>
+            </group>
+            <group
+                android:name="group"
+                android:pivotX="54"
+                android:pivotY="54"
+                android:translateX="75"
+                android:translateY="75"
+                android:scaleX="0"
+                android:scaleY="0">
+                <path
+                    android:name="path_2"
+                    android:pathData="M 99 13.5 L 91.485 21.015 L 84.015 13.5 L 76.5 21.015 L 68.985 13.5 L 61.515 21.015 L 54 13.5 L 46.485 21.015 L 39.015 13.5 L 31.5 21.015 L 23.985 13.5 L 16.515 21.015 L 9 13.5 L 9 85.5 C 9 90.45 13.05 94.5 18 94.5 L 90 94.5 C 94.95 94.5 99 90.45 99 85.5 L 99 13.5 Z M 49.5 85.5 L 18 85.5 L 18 58.5 L 49.5 58.5 L 49.5 85.5 Z M 90 85.5 L 58.5 85.5 L 58.5 76.5 L 90 76.5 L 90 85.5 Z M 90 67.5 L 58.5 67.5 L 58.5 58.5 L 90 58.5 L 90 67.5 Z M 90 49.5 L 18 49.5 L 18 36 L 90 36 L 90 49.5 Z"
+                    android:fillColor="#1a4766"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="group">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:startOffset="100"
+                    android:duration="400"
+                    android:valueFrom="0.2"
+                    android:valueTo="0.7"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:startOffset="100"
+                    android:duration="400"
+                    android:valueFrom="0.2"
+                    android:valueTo="0.7"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="rotation"
+                    android:startOffset="100"
+                    android:duration="400"
+                    android:valueFrom="-180"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="group_1">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:duration="300"
+                    android:valueFrom="0.7"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="300"
+                    android:valueFrom="0.7"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

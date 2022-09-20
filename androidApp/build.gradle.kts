@@ -56,6 +56,7 @@ dependencies {
     implementation("io.coil-kt:coil:2.1.0")
 
     implementation ("com.google.accompanist:accompanist-webview:0.26.3-beta")
+    implementation ("androidx.core:core-splashscreen:1.0.0")
 
 
 }

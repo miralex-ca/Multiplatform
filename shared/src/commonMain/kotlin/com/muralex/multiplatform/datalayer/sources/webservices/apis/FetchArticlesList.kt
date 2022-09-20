@@ -1,35 +1,18 @@
 package com.muralex.multiplatform.datalayer.sources.webservices.apis
 
 
+import com.muralex.multiplatform.datalayer.objects.NetworkResult
+import com.muralex.multiplatform.datalayer.objects.apis.NewsApiResponse
+import com.muralex.multiplatform.datalayer.objects.apis.NewsDto
 import com.muralex.multiplatform.datalayer.sources.webservices.ApiClient
+import io.ktor.client.call.*
+import io.ktor.client.statement.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
-suspend fun ApiClient.fetchNewsList(): NewsApiResponse? {
+suspend fun ApiClient.fetchNewsList(): NetworkResult<NewsApiResponse> {
     return getResponse("")
 }
 
 
-//@Serializable
-//data class CountriesListResponse(
-//    @SerialName("data") val data : List<CountryListData>,
-//    @SerialName("err") val error : String? = null,
-//)
-
-@Serializable
-data class NewsApiResponse (
-    @SerialName("articles")
-    val articles: List<News>?
-)
-
-@Serializable
-data class News (
-    @SerialName("title")
-    val title: String?,
-    @SerialName("description")
-    val description: String?,
-    @SerialName("url")
-    val url: String?,
-    @SerialName("urlToImage")
-    val urlToImage: String?
-)
