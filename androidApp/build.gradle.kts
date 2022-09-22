@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("kotlin-parcelize")
     kotlin("android")
 }
 
@@ -48,6 +49,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-process:2.5.1")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.5.1")
     implementation ("androidx.compose.material:material-icons-extended:1.2.1")
+
+
+    implementation("androidx.compose.material:material:1.3.0-beta02")
+
     implementation ("androidx.compose.material3:material3:1.0.0-beta02")
     implementation("androidx.compose.material3:material3-window-size-class:1.0.0-beta02")
 

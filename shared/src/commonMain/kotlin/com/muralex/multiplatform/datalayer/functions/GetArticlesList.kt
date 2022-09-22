@@ -18,6 +18,9 @@ suspend fun Repository.getArticlesListData(): List<ArticleData> = withRepoContex
 }
 
 fun List<ArticleData>.imageUpfront() : List<ArticleData> {
+
+    //println("list: " + this)
+
     val orderedList = toMutableList()
      map { articleData ->
         if (articleData.image.trim().isEmpty()) {

@@ -7,7 +7,8 @@ import com.muralex.multiplatform.viewmodel.ScreenState
 
 data class ArticlesListState (
     val isLoading : Boolean = false,
-    val articlesListItems : List<ArticlesListItem> = emptyList()
+    val articlesListItems : List<ArticlesListItem> = emptyList(),
+    val bottomSheetState: BottomSheetState = BottomSheetState()
 ): ScreenState
 
 /********** property classes **********/
@@ -20,3 +21,10 @@ data class ArticlesListItem (
     val name = _data.title
     val desc = _data.description
 }
+
+
+data class BottomSheetState (
+    val open: Boolean = false,
+    val data: ArticleData? = null
+)
+

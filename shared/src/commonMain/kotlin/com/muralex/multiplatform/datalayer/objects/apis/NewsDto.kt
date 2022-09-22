@@ -42,10 +42,8 @@ val List<NewsDto>.entity get() = map { it.entity }
 
 private fun processDate(date: String?): Long {
     var published = 0L
-
     try {
         published = date?.toInstant()?.toEpochMilliseconds() ?: 0L
-
     } catch (e: Exception) {
         e.printStackTrace()
     }

@@ -15,8 +15,6 @@ class Repository(val settings: Settings = Settings(), val useDefaultDispatcher: 
     internal val runtimeCache get() = CacheObjects
     internal val localSettings by lazy { MySettings(settings) }
 
-    // we run each repository function on a Dispatchers.Default coroutine
-    // we pass useDefaultDispatcher=false just for the TestRepository instance
     suspend fun <T> withRepoContext (block: suspend () -> T) : T {
         return if (useDefaultDispatcher) {
             withContext(Dispatchers.Default) {

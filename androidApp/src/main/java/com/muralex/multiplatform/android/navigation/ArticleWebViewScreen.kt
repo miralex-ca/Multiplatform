@@ -1,32 +1,23 @@
-package eu.baroncelli.dkmpsample.composables.screens.countrieslist
+package com.muralex.multiplatform.android.navigation
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 
 import android.util.Log
-import android.view.View
 import android.webkit.WebView
-import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Logout
-import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion
-import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion.Black
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,9 +26,6 @@ import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewNavigator
 import com.google.accompanist.web.rememberWebViewState
 import com.muralex.multiplatform.android.R
-import com.muralex.multiplatform.android.navigation.LoadingScreen
-import com.muralex.multiplatform.viewmodel.screens.articledetail.ArticleDetail
-import com.muralex.multiplatform.viewmodel.screens.articledetail.ArticleDetailState
 import com.muralex.multiplatform.viewmodel.screens.webviewdetail.ArticleWebviewData
 import com.muralex.multiplatform.viewmodel.screens.webviewdetail.ArticleWebviewState
 import kotlinx.coroutines.delay
@@ -48,7 +36,6 @@ fun ArticleWebViewScreen(
     articleState: ArticleWebviewState,
     exitScreen: ()-> Unit
 ) {
-
     Column {
         ArticleWebViewTopBar(
             onBackClick = exitScreen
@@ -56,7 +43,6 @@ fun ArticleWebViewScreen(
         ArticleWebViewContent(articleState.articleInfo)
     }
 }
-
 
 @Composable
 private fun ArticleWebViewContent(item: ArticleWebviewData) {
@@ -99,22 +85,15 @@ fun LoadWebUrl(url: String) {
                 super.onPageCommitVisible(view, url)
                 visibility.value = false
             }
-
-
         }
     }
 
     WebView(
         state = state,
-        modifier = Modifier
-            .background(color = Color(0xff0f9d58))
-            //.fillMaxHeight()
-                ,
         navigator = navigator,
         onCreated = { webView ->
             webView.settings.javaScriptEnabled = true
         },
-
         client = webClient
     )
 
@@ -128,9 +107,7 @@ fun LoadWebUrl(url: String) {
             CircularProgressIndicator(
             )
         }
-
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -192,7 +169,6 @@ fun  ArticleWebViewTopBar(
                 )
             }
         }
-
     )
 }
 

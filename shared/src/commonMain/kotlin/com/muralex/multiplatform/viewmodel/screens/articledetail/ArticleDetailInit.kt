@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializable
 // INIZIALIZATION settings for this screen
 // to understand the initialization behaviour, read the comments in the ScreenInitSettings.kt file
 
-@Serializable // Note: ScreenParams should always be set as Serializable
-data class ArticleDetailParams(val title: String) : ScreenParams
+@Serializable
+data class ArticleDetailParams(val title: String = "") : ScreenParams
 
 fun Navigation.initArticleDetail(params: ArticleDetailParams) = ScreenInitSettings (
     title = params.title,

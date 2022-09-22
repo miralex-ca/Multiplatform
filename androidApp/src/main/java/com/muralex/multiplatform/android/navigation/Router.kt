@@ -1,36 +1,48 @@
-package eu.baroncelli.dkmpsample.composables.navigation
+package com.muralex.multiplatform.android.navigation
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.Newspaper
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.SaveableStateHolder
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ShareCompat
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.ModalBottomSheetLayout
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.muralex.multiplatform.android.R
+import com.muralex.multiplatform.android.ui.BottomData
+import com.muralex.multiplatform.android.ui.BottomSheet
 import com.muralex.multiplatform.viewmodel.Navigation
 import com.muralex.multiplatform.viewmodel.ScreenIdentifier
 import com.muralex.multiplatform.viewmodel.screens.Level1Navigation
 import com.muralex.multiplatform.viewmodel.screens.Screen
 import com.muralex.multiplatform.viewmodel.screens.appsettings.AppSettingsParams
-import com.muralex.multiplatform.viewmodel.screens.articledetail.ArticleDetail
 import com.muralex.multiplatform.viewmodel.screens.webviewdetail.ArticleWebviewParams
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun Navigation.Router() {
@@ -56,15 +68,51 @@ fun Navigation.HandleBackButton() {
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialNavigationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun Navigation.OnePane(
     saveableStateHolder: SaveableStateHolder,
 ) {
 
+    val sheetState = rememberModalBottomSheetState( initialValue = ModalBottomSheetValue.Hidden)
 
-    val bottomSheetNavigator = rememberBottomSheetNavigator()
-    ModalBottomSheetLayout(bottomSheetNavigator) {
+    val coroutineScope = rememberCoroutineScope()
+
+    val bottomData =rememberSaveable {mutableStateOf(BottomData())}
+
+    BackHandler(sheetState.isVisible) {
+        closeButtonSheet(coroutineScope, sheetState)
+    }
+
+    val shareContext = LocalContext.current
+
+    ModalBottomSheetLayout(
+        sheetState = sheetState,
+        sheetContent = {
+            BottomSheet(
+                bottomData = bottomData.value,
+                onCloseClick = {
+                    closeButtonSheet(coroutineScope, sheetState)
+                },
+                onSourceClick = {
+                    coroutineScope.launch {
+                        closeButtonSheet(coroutineScope, sheetState)
+                        delay(200)
+                        navigate(Screen.ArticleWebview, ArticleWebviewParams(bottomData.value.title))
+                    }
+                },
+                onShareClick = {
+                    share(shareContext, bottomData.value.title)
+                }
+            )
+        },
+        scrimColor = Color.Transparent,
+        sheetShape = RoundedCornerShape(24.dp, 24.dp, 0.dp, 0.dp),
+        sheetBackgroundColor = MaterialTheme.colorScheme.surfaceVariant,
+        sheetContentColor = Color.Cyan,
+        modifier = Modifier.fillMaxSize(),
+        sheetElevation = 20.dp,
+    ) {
 
         Column(modifier = Modifier
             .fillMaxSize()
@@ -81,7 +129,7 @@ fun Navigation.OnePane(
                                 title = getTitle(currentScreenIdentifier),
                                 onSettingsClick = {
                                     navigate(Screen.AppSettings, AppSettingsParams("Settings"))
-                                }
+                                },
                             )
                         }
                         else -> {}
@@ -93,7 +141,16 @@ fun Navigation.OnePane(
                         Modifier.padding(innerPadding)
                     ) {
                         saveableStateHolder.SaveableStateProvider(currentScreenIdentifier.URI) {
-                            ScreenPicker(currentScreenIdentifier)
+                            ScreenPicker(
+                                screenIdentifier = currentScreenIdentifier,
+                                openBottomSheet = {
+                                    coroutineScope.launch {
+                                        sheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                    }
+                                },
+                                bottomData = bottomData
+
+                            )
                         }
                     }
                 },
@@ -103,13 +160,17 @@ fun Navigation.OnePane(
                 }
             )
         }
-
-
-
     }
 }
 
 
+@OptIn(ExperimentalMaterialApi::class)
+private fun closeButtonSheet(
+    coroutineScope: CoroutineScope,
+    sheetState: ModalBottomSheetState,
+) {
+    coroutineScope.launch { sheetState.hide() }
+}
 
 
 @Composable
@@ -139,7 +200,6 @@ fun Navigation.Level1BottomBar(
             onClick = { navigateByLevel1Menu(Level1Navigation.FavoriteArticles) }
         )
     }
-
 }
 
 
@@ -164,9 +224,17 @@ fun TopBar(
                 )
             }
         }
-
     )
 }
+
+
+
+
+
+
+
+
+
 
 
 

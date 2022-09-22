@@ -1,10 +1,10 @@
-package eu.baroncelli.dkmpsample.composables
+package com.muralex.multiplatform.android.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.muralex.multiplatform.viewmodel.DKMPViewModel
-import eu.baroncelli.dkmpsample.composables.navigation.Router
+import com.muralex.multiplatform.android.navigation.Router
 
 
 @Composable

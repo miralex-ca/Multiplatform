@@ -1,4 +1,4 @@
-package eu.baroncelli.dkmpsample.composables.screens.countrieslist
+package com.muralex.multiplatform.android.navigation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
@@ -21,44 +21,35 @@ import coil.compose.AsyncImage
 import com.muralex.multiplatform.viewmodel.screens.favoriteslist.FavoriteListItem
 import com.muralex.multiplatform.viewmodel.screens.favoriteslist.FavoriteListState
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FavoriteListScreen(
     countriesListState: FavoriteListState,
     onListItemClick: (String) -> Unit,
 ) {
-    if (countriesListState.isLoading) {
+    if (countriesListState.articlesListItems.isEmpty()) {
 
-        //  LoadingScreen()
-
+        Text(
+            text = "empty list",
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier
+                .padding(top = 30.dp)
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp
+        )
     } else {
+        LazyColumn(
+            contentPadding = PaddingValues(vertical = 10.dp),
+        ) {
 
-        if (countriesListState.articlesListItems.isEmpty()) {
-
-            Text(
-                text = "empty list",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .padding(top = 30.dp)
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                fontSize = 18.sp
-            )
-        } else {
-            LazyColumn(
-
-                contentPadding = PaddingValues(vertical = 10.dp),
-            ) {
-
-                items(
-                    items = countriesListState.articlesListItems,
-                    itemContent = { item ->
-                        FavoriteListItem(
-                            item = item,
-                            onItemClick = { onListItemClick(item.name) },
-                        )
-                    })
-            }
+            items(
+                items = countriesListState.articlesListItems,
+                itemContent = { item ->
+                    FavoriteListItem(
+                        item = item,
+                        onItemClick = { onListItemClick(item.name) },
+                    )
+                })
         }
     }
 }
@@ -81,10 +72,7 @@ fun FavoriteListItem(
                 .padding(12.dp)
         ) {
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-
-                ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -121,8 +109,7 @@ fun FavoriteListItem(
             }
             Spacer(Modifier.height(6.dp))
             Text(
-                text =
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vulputate urna in neque facilisis, vitae fermentum est sollicitudin. Mauris nec maximus enim, sed aliquam ante. . ",
+                text = item.desc,
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.Light,
                 fontSize = 13.sp,

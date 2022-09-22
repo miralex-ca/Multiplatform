@@ -1,13 +1,16 @@
 package com.muralex.multiplatform.android.navigation
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -19,8 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -90,48 +91,145 @@ private fun AppSettingsBox(
 
                 Text(
                     text = "Interface",
-                    modifier = Modifier
-                        .padding(8.dp),
+                    modifier = Modifier.padding(8.dp),
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.surfaceTint,
                     fontSize = 18.sp
                 )
 
-                Column(
-                    modifier = Modifier
-                        .clickable {
-                            openDialog.value = true
-                        }
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                ) {
+                DarkModeSetting(openDialog)
 
-                    Text(
-                        text = "Dark mode",
-                        modifier = Modifier
-                            .padding(2.dp),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontSize = 18.sp
+                Spacer(Modifier.height(5.dp))
 
-                    )
+                HomeSetting(openDialog)
 
-                    Text(
-                        text = "System default",
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .alpha(0.8F),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontSize = 14.sp
-                    )
+                Spacer(Modifier.height(20.dp))
 
-                }
+                Text(
+                    text = "News updates",
+                    modifier = Modifier.padding(8.dp),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.surfaceTint,
+                    fontSize = 18.sp
+                )
+
+                CountrySelection(openDialog)
+
+                Spacer(Modifier.height(5.dp))
+
+                RefreshData(openDialog)
+
+                Spacer(Modifier.height(35.dp))
 
                 AlertDialogSample(openDialog = openDialog)
-
             }
         }
     }
 }
+
+
+
+@Composable
+private fun DarkModeSetting(openDialog: MutableState<Boolean>) {
+    Column(
+        modifier = Modifier
+            .clickable { openDialog.value = true }
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+
+        Text(
+            text = "Dark mode",
+            modifier = Modifier.padding(2.dp),
+            style = MaterialTheme.typography.bodyLarge,
+            fontSize = 18.sp
+        )
+
+        Text(
+            text = "System default",
+            modifier = Modifier
+                .padding(2.dp)
+                .alpha(0.8F),
+            style = MaterialTheme.typography.bodyLarge,
+            fontSize = 14.sp
+        )
+    }
+}
+
+
+@Composable
+private fun HomeSetting(openDialog: MutableState<Boolean>) {
+    Column(
+        modifier = Modifier
+            .clickable { openDialog.value = true }
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+
+        Text(
+            text = "Click from the main list",
+            modifier = Modifier.padding(2.dp),
+            style = MaterialTheme.typography.bodyLarge,
+            fontSize = 18.sp
+        )
+
+        Text(
+            text = "Display news in a bottom sheet",
+            modifier = Modifier
+                .padding(2.dp)
+                .alpha(0.8F),
+            style = MaterialTheme.typography.bodyLarge,
+            fontSize = 14.sp
+        )
+    }
+}
+
+@Composable
+private fun CountrySelection(openDialog: MutableState<Boolean>) {
+    Column(
+        modifier = Modifier
+            .clickable { openDialog.value = true }
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+
+        Text(
+            text = "Select country",
+            modifier = Modifier.padding(2.dp),
+            style = MaterialTheme.typography.bodyLarge,
+            fontSize = 18.sp
+        )
+
+        Text(
+            text = "Current: Canada",
+            modifier = Modifier
+                .padding(2.dp)
+                .alpha(0.8F),
+            style = MaterialTheme.typography.bodyLarge,
+            fontSize = 14.sp
+        )
+    }
+}
+
+@Composable
+private fun RefreshData(openDialog: MutableState<Boolean>) {
+    Column(
+        modifier = Modifier
+            .clickable { openDialog.value = true }
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+
+        Text(
+            text = "App data updates",
+            modifier = Modifier.padding(2.dp),
+            style = MaterialTheme.typography.bodyLarge,
+            fontSize = 18.sp
+        )
+    }
+}
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -162,9 +260,7 @@ fun AlertDialogSample(
             content = {
                 RadioGroupSample(
                     radioOptions = listOf(
-                        "Dark mode",
-                        "Light mode",
-                        "System default"
+                        "Dark mode", "Light mode", "System default"
                     ),
                     onSelect = { openDialog.value = false },
                 )
@@ -182,9 +278,7 @@ fun AlertDialogSample(
                     )
                 }
             }
-
         )
-
     }
 }
 
@@ -195,7 +289,6 @@ fun RadioGroupSample(
 ) {
 
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
-
     Column(Modifier.selectableGroup()) {
         radioOptions.forEach { text ->
             Row(
@@ -256,7 +349,6 @@ fun NoPaddingAlertDialog(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-
                 if (titleText.isEmpty()) {
                     title?.let {
                         CompositionLocalProvider {
@@ -265,7 +357,6 @@ fun NoPaddingAlertDialog(
                         }
                     }
                 } else {
-
                     Text(
                         text = titleText,
                         modifier = Modifier.padding(vertical = 20.dp, horizontal = 24.dp),
@@ -273,18 +364,12 @@ fun NoPaddingAlertDialog(
                         fontSize = 20.sp
                     )
                 }
-
                 content?.invoke()
 
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-
-                ) {
+                Box(Modifier.fillMaxWidth()) {
                     Row(
                         horizontalArrangement = Arrangement.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                             .padding(vertical = 8.dp, horizontal = 14.dp),
                     ) {
                         dismissButton?.invoke()

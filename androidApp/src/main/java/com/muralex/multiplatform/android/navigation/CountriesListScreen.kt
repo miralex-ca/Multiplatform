@@ -1,5 +1,7 @@
 package com.muralex.multiplatform.android.navigation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -20,17 +23,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.muralex.multiplatform.android.ui.BottomData
+import com.muralex.multiplatform.datalayer.objects.ArticleData
 import com.muralex.multiplatform.viewmodel.screens.articleslist.ArticlesListItem
 import com.muralex.multiplatform.viewmodel.screens.articleslist.ArticlesListState
 
 @Composable
 fun ArticlesListScreen(
     countriesListState: ArticlesListState,
+    openBottomSheet: (ArticleData?) -> Unit,
     onListItemClick: (String) -> Unit,
+    onBottomSheetOpen: () -> Unit,
+    bottomData: MutableState<BottomData>,
 ) {
     if (countriesListState.isLoading) {
         LoadingScreen()
     } else {
+
+        if (countriesListState.bottomSheetState.open) {
+            openBottomSheet.invoke(countriesListState.bottomSheetState.data)
+            onBottomSheetOpen.invoke()
+        }
 
         if (countriesListState.articlesListItems.isEmpty()) {
 
@@ -45,7 +58,6 @@ fun ArticlesListScreen(
             )
         } else {
             LazyColumn(
-
                 contentPadding = PaddingValues(vertical = 10.dp),
             ) {
 
@@ -54,7 +66,16 @@ fun ArticlesListScreen(
                     itemContent = { item ->
                         ArticleListItem(
                             item = item,
-                            onItemClick = { onListItemClick(item.name) },
+                            onItemClick = {onListItemClick(item._data.url) },
+                            onLongListItemClick = {
+                                bottomData.value =
+                                    BottomData(
+                                        title = item.name,
+                                        text = item._data.description,
+                                        image = item._data.image,
+                                        url = item._data.url)
+                                onListItemClick(item._data.url)
+                            },
                         )
                     })
             }
@@ -63,18 +84,20 @@ fun ArticlesListScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ArticleListItem(
     item: ArticlesListItem,
     favorite: Boolean = true,
     onItemClick: () -> Unit,
+    onLongListItemClick: () -> Unit,
 ) {
-     Card(
+    Card(
         modifier = Modifier
             .padding(horizontal = 12.dp, vertical = 4.dp),
-        onClick = onItemClick
-    ) {
+        onClick = onLongListItemClick,
+
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -84,8 +107,7 @@ fun ArticleListItem(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-
-                ) {
+            ) {
 
                 if (item._data.image.isNotEmpty()) {
                     AsyncImage(
@@ -121,7 +143,6 @@ fun ArticleListItem(
                         fontSize = 12.sp
                     )
                 }
-
             }
         }
     }

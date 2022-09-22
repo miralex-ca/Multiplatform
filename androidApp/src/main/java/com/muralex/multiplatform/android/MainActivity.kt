@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.muralex.multiplatform.android.theme.MyApplicationTheme
-import eu.baroncelli.dkmpsample.composables.MainComposable
+import com.muralex.multiplatform.android.ui.MainComposable
 
 
 

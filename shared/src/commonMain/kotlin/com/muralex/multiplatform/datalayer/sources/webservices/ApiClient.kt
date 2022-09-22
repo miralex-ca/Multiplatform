@@ -14,7 +14,12 @@ import kotlinx.serialization.json.Json
 
 class ApiClient {
 
-    val baseUrl = "https://newsapi.org/v2/top-headlines?country=ca&pageSize=20&apiKey=b7122b5c5f8948eda9715867b6240ce6"
+    // TODO check url
+    // 6a509f59b2034acaa5e5318a917fba34
+    //b7122b5c5f8948eda9715867b6240ce6
+    val baseUrl =
+        //"https://newsapi.org/v2/top-headlines?country=ca&pageSize=20&apiKey=6a509f59b2034acaa5e5318a917fba34"
+        "https://newsapi.amiron.repl.co/data.json"
 
     val client = HttpClient {
 
@@ -27,10 +32,9 @@ class ApiClient {
         }
 
         install(Logging) {
-            logger = Logger.DEFAULT
+            logger = Logger.SIMPLE
             level = LogLevel.ALL
         }
-
     }
 
     suspend inline fun  <reified T : Any> getResponse(
@@ -46,8 +50,12 @@ class ApiClient {
 
         return try {
             val response = client.get(url).body<T>()
+
+            println("fail not")
+
             NetworkResult.Success(response)
         } catch (e: Exception) {
+            println("fail")
             val code = (e as? ResponseException)?.response?.status?.value
             val message = (e as? ResponseException)?.message
             NetworkResult.Failure(code, message)

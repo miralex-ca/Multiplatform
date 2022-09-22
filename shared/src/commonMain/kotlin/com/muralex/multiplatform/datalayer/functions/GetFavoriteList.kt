@@ -7,9 +7,6 @@ import com.muralex.multiplatform.viewmodel.screens.favoriteslist.FavoriteListIte
 suspend fun Repository.getFavoriteListData(): List<FavoriteListItem> = withRepoContext {
    // emptyList()
 
-//    webservices.fetchNewsList()?.apply {
-//        println(this)
-//    }
 
     val list = mutableListOf<FavoriteListItem>()
 
@@ -24,7 +21,6 @@ suspend fun Repository.getFavoriteListData(): List<FavoriteListItem> = withRepoC
             publishedTime = 0L,
             source = ""
         )
-
     )
 
     repeat(3) {
@@ -32,8 +28,6 @@ suspend fun Repository.getFavoriteListData(): List<FavoriteListItem> = withRepoC
     }
 
     list
-
-
 
 
 }
