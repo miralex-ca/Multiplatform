@@ -10,12 +10,11 @@ import kotlinx.serialization.Serializable
 data class ArticlesListParams(val listType: ArticlesListType) : ScreenParams
 
 fun Navigation.initArticlesList(params: ArticlesListParams) = ScreenInitSettings (
-    title = "National Headlines ",
+    title = "News: Canada",
     initState = { ArticlesListState(isLoading = true) },
     callOnInit = {
-        val listData = dataRepository.getArticlesListData()
 
-        // update state, after retrieving data from the repository
+        val listData = dataRepository.getArticlesListData()
         stateManager.updateScreen(ArticlesListState::class) {
             it.copy(
                 isLoading = false,

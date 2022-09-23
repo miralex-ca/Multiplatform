@@ -39,6 +39,7 @@ import com.muralex.multiplatform.viewmodel.ScreenIdentifier
 import com.muralex.multiplatform.viewmodel.screens.Level1Navigation
 import com.muralex.multiplatform.viewmodel.screens.Screen
 import com.muralex.multiplatform.viewmodel.screens.appsettings.AppSettingsParams
+import com.muralex.multiplatform.viewmodel.screens.articleslist.setBookmark
 import com.muralex.multiplatform.viewmodel.screens.webviewdetail.ArticleWebviewParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -78,7 +79,7 @@ fun Navigation.OnePane(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val bottomData =rememberSaveable {mutableStateOf(BottomData())}
+    val bottomData = rememberSaveable {mutableStateOf(BottomData())}
 
     BackHandler(sheetState.isVisible) {
         closeButtonSheet(coroutineScope, sheetState)
@@ -97,12 +98,15 @@ fun Navigation.OnePane(
                 onSourceClick = {
                     coroutineScope.launch {
                         closeButtonSheet(coroutineScope, sheetState)
-                        delay(200)
+                        delay(100)
                         navigate(Screen.ArticleWebview, ArticleWebviewParams(bottomData.value.title))
                     }
                 },
                 onShareClick = {
                     share(shareContext, bottomData.value.title)
+                },
+                onBookmarkClick = {
+                    events.setBookmark(bottomData.value.url)
                 }
             )
         },
@@ -143,12 +147,23 @@ fun Navigation.OnePane(
                         saveableStateHolder.SaveableStateProvider(currentScreenIdentifier.URI) {
                             ScreenPicker(
                                 screenIdentifier = currentScreenIdentifier,
-                                openBottomSheet = {
-                                    coroutineScope.launch {
-                                        sheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                openBottomSheet = { bottomSheetStateData ->
+
+                                    if (bottomSheetStateData.open) {
+                                        coroutineScope.launch {
+                                            sheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                        }
                                     }
-                                },
-                                bottomData = bottomData
+
+                                    bottomData.value = BottomData(
+                                        title = bottomSheetStateData.data?.title ?: "",
+                                        text = bottomSheetStateData.data?.description ?: "",
+                                        image = bottomSheetStateData.data?.image ?: "",
+                                        url = bottomSheetStateData.data?.url ?: "",
+                                        isFavorite = bottomSheetStateData.isFavorite
+                                    )
+
+                                }
 
                             )
                         }

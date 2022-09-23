@@ -6,7 +6,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.twotone.Bookmark
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,11 +25,13 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.muralex.multiplatform.android.R
+import com.muralex.multiplatform.datalayer.objects.ArticleData
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class BottomData(
     val title: String = String(),
+    val isFavorite: Boolean = false,
     val text: String = String(),
     val image: String = String(),
     val url: String = String(),
@@ -46,7 +50,7 @@ fun BottomSheet(
         modifier = Modifier
             .padding(32.dp)
             .verticalScroll(rememberScrollState()),
-        ) {
+    ) {
 
         Column(
             modifier = Modifier
@@ -100,11 +104,14 @@ fun BottomSheet(
                 icon = Icons.Outlined.Share,
             )
 
+
             ButtomSheetButton(
                 onClick = onBookmarkClick,
                 text = stringResource(id = R.string.btm_sheet_btn_bookmark),
-                icon = Icons.Outlined.BookmarkAdd,
+                icon = if (bottomData.isFavorite) Icons.TwoTone.Bookmark
+                        else Icons.Outlined.BookmarkAdd
             )
+
 
             ButtomSheetButton(
                 onClick = onSourceClick,
@@ -126,11 +133,11 @@ private fun ButtomSheetButton(
     onClick: () -> Unit = {},
     text: String = "",
     icon: ImageVector,
-    ) {
+) {
     TextButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.small
-        ) {
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

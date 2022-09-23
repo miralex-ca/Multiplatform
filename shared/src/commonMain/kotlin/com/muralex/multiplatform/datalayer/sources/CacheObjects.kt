@@ -9,4 +9,19 @@ object CacheObjects {
 
     var articlesList: List<ArticleData> = emptyList()
 
+    fun getArticleByUrl(url: String) : ArticleData {
+        return  articlesList.find {
+             it.url == url
+        } ?: ArticleData(
+            title = "Article not found",
+            url = "",
+            description = "",
+            image = "",
+            text = "",
+            publishedAt = "",
+            publishedTime = 0L,
+            source = ""
+        )
+    }
+
 }

@@ -10,13 +10,12 @@ data class ArticleDetailState (
     val articleInfo : ArticleDetail = ArticleDetail(),
 ): ScreenState
 
-
 /********** property classes **********/
 
 data class ArticleDetail (
     val _data : ArticleData = ArticleData(
-        title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        url = "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+        title = ".",
+        url = "",
         description = "",
         image = "",
         text = "",
@@ -24,7 +23,6 @@ data class ArticleDetail (
         publishedTime = 0L,
         source = ""
     ),
-
 
     val isFavorite: Boolean = false
 )

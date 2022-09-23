@@ -1,5 +1,6 @@
 
 
+val sqlDelightVersion by extra("1.5.3")
 
 buildscript {
     repositories {

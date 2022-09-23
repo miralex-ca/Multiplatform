@@ -1,7 +1,5 @@
 package com.muralex.multiplatform.android.navigation
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,7 +9,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -23,26 +20,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.muralex.multiplatform.android.ui.BottomData
-import com.muralex.multiplatform.datalayer.objects.ArticleData
+import com.muralex.multiplatform.android.util.formatToDate
 import com.muralex.multiplatform.viewmodel.screens.articleslist.ArticlesListItem
 import com.muralex.multiplatform.viewmodel.screens.articleslist.ArticlesListState
+import com.muralex.multiplatform.viewmodel.screens.articleslist.BottomSheetStateData
 
 @Composable
 fun ArticlesListScreen(
     countriesListState: ArticlesListState,
-    openBottomSheet: (ArticleData?) -> Unit,
+    openBottomSheet: (BottomSheetStateData) -> Unit,
     onListItemClick: (String) -> Unit,
     onBottomSheetOpen: () -> Unit,
-    bottomData: MutableState<BottomData>,
 ) {
     if (countriesListState.isLoading) {
         LoadingScreen()
     } else {
 
-        if (countriesListState.bottomSheetState.open) {
-            openBottomSheet.invoke(countriesListState.bottomSheetState.data)
+        if (countriesListState.bottomSheetStateData.open) {
+            openBottomSheet.invoke(countriesListState.bottomSheetStateData)
             onBottomSheetOpen.invoke()
+        } else {
+            openBottomSheet.invoke(countriesListState.bottomSheetStateData)
         }
 
         if (countriesListState.articlesListItems.isEmpty()) {
@@ -66,14 +64,7 @@ fun ArticlesListScreen(
                     itemContent = { item ->
                         ArticleListItem(
                             item = item,
-                            onItemClick = {onListItemClick(item._data.url) },
-                            onLongListItemClick = {
-                                bottomData.value =
-                                    BottomData(
-                                        title = item.name,
-                                        text = item._data.description,
-                                        image = item._data.image,
-                                        url = item._data.url)
+                            onItemClick  = {
                                 onListItemClick(item._data.url)
                             },
                         )
@@ -84,18 +75,16 @@ fun ArticlesListScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticleListItem(
     item: ArticlesListItem,
-    favorite: Boolean = true,
     onItemClick: () -> Unit,
-    onLongListItemClick: () -> Unit,
 ) {
     Card(
         modifier = Modifier
             .padding(horizontal = 12.dp, vertical = 4.dp),
-        onClick = onLongListItemClick,
+        onClick = onItemClick,
 
         ) {
         Column(
@@ -137,7 +126,7 @@ fun ArticleListItem(
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        text = "Date: 22/22/22",
+                        text = item._data.publishedTime.formatToDate(),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Light,
                         fontSize = 12.sp

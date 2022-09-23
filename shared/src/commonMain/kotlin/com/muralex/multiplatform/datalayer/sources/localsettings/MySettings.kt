@@ -10,5 +10,4 @@ class MySettings (s : Settings) {
     var listCacheTimestamp by s.long(defaultValue = 0)
     var savedLevel1URI by s.string(defaultValue = Level1Navigation.AllArticles.screenIdentifier.URI)
 
-
 }

@@ -1,25 +1,27 @@
 package com.muralex.multiplatform.viewmodel.screens.articledetail
 
 import com.muralex.multiplatform.datalayer.functions.getArticleDetail
+import com.muralex.multiplatform.datalayer.functions.getBookmarkDetail
 import com.muralex.multiplatform.viewmodel.Navigation
 import com.muralex.multiplatform.viewmodel.ScreenParams
 import com.muralex.multiplatform.viewmodel.screens.ScreenInitSettings
 import kotlinx.serialization.Serializable
 
 
-// INIZIALIZATION settings for this screen
-// to understand the initialization behaviour, read the comments in the ScreenInitSettings.kt file
-
 @Serializable
-data class ArticleDetailParams(val title: String = "") : ScreenParams
+data class ArticleDetailParams(val url: String = "", val source: String = DetailSource.BOOKMARKS.name) : ScreenParams
 
 fun Navigation.initArticleDetail(params: ArticleDetailParams) = ScreenInitSettings (
-    title = params.title,
+    title = params.url,
     initState = { ArticleDetailState(isLoading = true) },
     callOnInit = {
 
-        val articleInfo = dataRepository.getArticleDetail(params.title)
-        // update state, after retrieving data from the repository
+        val articleInfo = if (params.source.uppercase() == DetailSource.BOOKMARKS.name) {
+            dataRepository.getBookmarkDetail(params.url)
+        } else {
+             dataRepository.getArticleDetail(params.url)
+        }
+
         stateManager.updateScreen(ArticleDetailState::class) {
             it.copy(
                 isLoading = false,
@@ -28,3 +30,7 @@ fun Navigation.initArticleDetail(params: ArticleDetailParams) = ScreenInitSettin
         }
     }
 )
+
+enum class DetailSource {
+    BOOKMARKS,
+}

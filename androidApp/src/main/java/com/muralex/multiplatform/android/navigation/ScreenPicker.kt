@@ -1,13 +1,12 @@
 package com.muralex.multiplatform.android.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import com.muralex.multiplatform.android.ui.BottomData
-import com.muralex.multiplatform.datalayer.objects.ArticleData
 import com.muralex.multiplatform.viewmodel.Navigation
 import com.muralex.multiplatform.viewmodel.ScreenIdentifier
 import com.muralex.multiplatform.viewmodel.screens.Screen
 import com.muralex.multiplatform.viewmodel.screens.articledetail.ArticleDetailParams
+import com.muralex.multiplatform.viewmodel.screens.articledetail.setArticleBookmark
+import com.muralex.multiplatform.viewmodel.screens.articleslist.BottomSheetStateData
 import com.muralex.multiplatform.viewmodel.screens.articleslist.openBottomSheet
 import com.muralex.multiplatform.viewmodel.screens.articleslist.resetBottomSheet
 import com.muralex.multiplatform.viewmodel.screens.webviewdetail.ArticleWebviewParams
@@ -15,26 +14,31 @@ import com.muralex.multiplatform.viewmodel.screens.webviewdetail.ArticleWebviewP
 @Composable
 fun Navigation.ScreenPicker(
     screenIdentifier: ScreenIdentifier,
-    openBottomSheet: (ArticleData?) -> Unit,
-    bottomData: MutableState<BottomData>,
+    openBottomSheet: (BottomSheetStateData) -> Unit,
+   // bottomData: MutableState<BottomData>,
 ) {
 
     when (screenIdentifier.screen) {
         Screen.FavoriteArticlesList ->
             FavoriteListScreen(
                 countriesListState = stateProvider.get(screenIdentifier),
-                onListItemClick = {
-                    navigate(Screen.ArticleDetail, ArticleDetailParams())
+                onListItemClick = { url ->
+                    navigate(Screen.ArticleDetail, ArticleDetailParams(url))
                 }
             )
 
         Screen.ArticleDetail ->
+
             ArticleDetailScreen(
+
                 articleState = stateProvider.get(screenIdentifier),
-                openInBrowser = { title ->
-                    navigate(Screen.ArticleWebview, ArticleWebviewParams(title))
+                openInBrowser = { url ->
+                    navigate(Screen.ArticleWebview, ArticleWebviewParams(url))
                 },
-                exitScreen = { exitScreen(triggerRecomposition = true) }
+                exitScreen = { exitScreen(triggerRecomposition = true) },
+                onBookmarkClick = {article ->
+                    events.setArticleBookmark(article)
+                }
             )
 
         Screen.ArticleWebview ->
@@ -52,13 +56,13 @@ fun Navigation.ScreenPicker(
         else -> ArticlesListScreen(
             openBottomSheet = openBottomSheet,
             countriesListState = stateProvider.get(screenIdentifier),
-            onListItemClick = { title ->
-                events.openBottomSheet(title)
+            onListItemClick = { url ->
+                events.openBottomSheet(url)
             },
             onBottomSheetOpen = {
                 events.resetBottomSheet()
             },
-            bottomData = bottomData
+            //bottomData = bottomData
         )
     }
 }

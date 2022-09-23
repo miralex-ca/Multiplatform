@@ -2,6 +2,7 @@ package com.muralex.multiplatform.datalayer.functions
 
 import com.muralex.multiplatform.datalayer.Repository
 import com.muralex.multiplatform.datalayer.objects.ArticleData
+import com.muralex.multiplatform.datalayer.sources.localdb.getBookmark
 import com.muralex.multiplatform.viewmodel.screens.articledetail.ArticleDetail
 import com.muralex.multiplatform.viewmodel.screens.articleslist.ArticlesListItem
 
@@ -20,10 +21,22 @@ suspend fun Repository.getArticleDetail(article: String): ArticleDetail = withRe
         source = ""
     )
 
+    val isFavorite = checkBookmark(articleData.url)
     val data = ArticlesListItem(articleData)
 
     ArticleDetail(
         _data = data._data,
-        isFavorite = false
+        isFavorite = isFavorite,
     )
+}
+
+
+suspend fun Repository.getBookmarkDetail(article: String): ArticleDetail = withRepoContext {
+
+    val articleData = localDb.getBookmark(article)
+    ArticleDetail(
+        _data = articleData,
+        isFavorite = true,
+    )
+
 }

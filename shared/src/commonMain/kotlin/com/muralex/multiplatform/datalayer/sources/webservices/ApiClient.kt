@@ -50,12 +50,8 @@ class ApiClient {
 
         return try {
             val response = client.get(url).body<T>()
-
-            println("fail not")
-
             NetworkResult.Success(response)
         } catch (e: Exception) {
-            println("fail")
             val code = (e as? ResponseException)?.response?.status?.value
             val message = (e as? ResponseException)?.message
             NetworkResult.Failure(code, message)

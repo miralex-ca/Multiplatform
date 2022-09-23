@@ -2,32 +2,32 @@ package com.muralex.multiplatform.datalayer.functions
 
 import com.muralex.multiplatform.datalayer.Repository
 import com.muralex.multiplatform.datalayer.objects.ArticleData
+import com.muralex.multiplatform.datalayer.sources.localdb.checkBookmark
+import com.muralex.multiplatform.datalayer.sources.localdb.deleteBookmark
+import com.muralex.multiplatform.datalayer.sources.localdb.getBookmarksList
+import com.muralex.multiplatform.datalayer.sources.localdb.insertBookmark
 import com.muralex.multiplatform.viewmodel.screens.favoriteslist.FavoriteListItem
 
 suspend fun Repository.getFavoriteListData(): List<FavoriteListItem> = withRepoContext {
-   // emptyList()
+     localDb.getBookmarksList().map {
+         FavoriteListItem(it)
+    }.asReversed()
+}
 
+suspend fun Repository.checkBookmark(url: String): Boolean = withRepoContext {
+    localDb.checkBookmark(url)
+}
 
-    val list = mutableListOf<FavoriteListItem>()
+suspend fun Repository.insertBookmark(article: ArticleData) = withRepoContext {
+    localDb.insertBookmark(article)
+}
 
-    val fakeItem = FavoriteListItem(
-        ArticleData(
-            title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            url = "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
-            description = "",
-            image = "",
-            text = "",
-            publishedAt = "",
-            publishedTime = 0L,
-            source = ""
-        )
-    )
-
-    repeat(3) {
-        list.add(fakeItem)
+suspend fun Repository.insertBookmarkByUrl(url: String) = withRepoContext {
+    runtimeCache.articlesList.find { it.url == url  }?.let {
+        localDb.insertBookmark(it)
     }
+}
 
-    list
-
-
+suspend fun Repository.deleteBookmark(url: String) = withRepoContext {
+    localDb.deleteBookmark(url)
 }

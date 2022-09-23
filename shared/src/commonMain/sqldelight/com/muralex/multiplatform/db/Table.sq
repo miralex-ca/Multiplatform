@@ -1,0 +1,29 @@
+CREATE TABLE BookmarksTable (
+id TEXT NOT NULL PRIMARY KEY,
+title TEXT NOT NULL,
+desc TEXT NOT NULL,
+text TEXT NOT NULL,
+source TEXT NOT NULL,
+url TEXT NOT NULL,
+image TEXT NOT NULL,
+time INTEGER NOT NULL DEFAULT 0
+);
+
+insertBookmark:
+REPLACE INTO BookmarksTable(id, title, desc, text, source, url, image, time)
+VALUES (?,?,?,?,?,?,?,?);
+
+deleteBookmark:
+DELETE FROM BookmarksTable WHERE url = ?;
+
+selectAll:
+SELECT * FROM BookmarksTable;
+
+getBookmark:
+SELECT * FROM BookmarksTable WHERE url = ?;
+
+checkBookmark:
+SELECT COUNT(1) FROM BookmarksTable WHERE url = ?;
+
+
+

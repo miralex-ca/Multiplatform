@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.OpenInNew
+import androidx.compose.material.icons.twotone.Bookmark
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,39 +34,30 @@ import androidx.core.app.ShareCompat
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.muralex.multiplatform.android.R
+import com.muralex.multiplatform.android.util.formatToDate
+import com.muralex.multiplatform.datalayer.objects.ArticleData
 import com.muralex.multiplatform.viewmodel.screens.articledetail.ArticleDetail
 import com.muralex.multiplatform.viewmodel.screens.articledetail.ArticleDetailState
+
 
 @Composable
 fun ArticleDetailScreen(
     articleState: ArticleDetailState,
-    openInBrowser: (String) -> Unit = { },
-    exitScreen: () -> Unit,
-) {
-
-    ArticleDetailItem(
-        item = articleState.articleInfo,
-        openInBrowser = openInBrowser,
-        exitScreen = exitScreen,
-    )
-}
-
-@Composable
-fun ArticleDetailItem(
-    item: ArticleDetail,
     openInBrowser: (String) -> Unit = {},
     exitScreen: () -> Unit,
+    onBookmarkClick: (ArticleData) -> Unit
 ) {
-
     val shareContext = LocalContext.current
+    val articleDetail = articleState.articleInfo
 
     Column {
         TopBarLevel2(
-            title = item._data.source,
-            isFavorite = item.isFavorite,
+            title = articleDetail._data.source,
+            isFavorite = articleDetail.isFavorite,
             onBackClick = exitScreen,
-            onMenuShareItemSelected = { share(shareContext, item._data.url) },
-            onMenuOpenItemSelected = {openInBrowser.invoke(item._data.title)},
+            onMenuShareItemSelected = { share(shareContext, articleDetail._data.url) },
+            onMenuOpenItemSelected = {openInBrowser.invoke(articleDetail._data.url)},
+            onBookmarkClick = { onBookmarkClick.invoke(articleDetail._data) }
         )
 
         val state = remember {
@@ -80,7 +72,7 @@ fun ArticleDetailItem(
             exit = fadeOut()
         ) {
             DetailContent(
-                item = item,
+                item = articleDetail,
                 openInBrowser =  openInBrowser,
             )
         }
@@ -108,18 +100,20 @@ private fun DetailContent(
                     .padding(12.dp)
             ) {
 
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(item._data.image)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = item._data.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .height(220.dp)
-                        .fillMaxWidth()
-                        .clip(shape = RoundedCornerShape(8.dp))
-                )
+                if (item._data.image.isNotEmpty()) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(item._data.image)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = item._data.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .height(220.dp)
+                            .fillMaxWidth()
+                            .clip(shape = RoundedCornerShape(8.dp))
+                    )
+                }
 
                 Column(
                     modifier = Modifier.padding(start = 6.dp, end = 6.dp)
@@ -135,7 +129,7 @@ private fun DetailContent(
                     )
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        text = "Date: 22/22/22",
+                        text = item._data.publishedTime.formatToDate(),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Light,
                         fontSize = 12.sp
@@ -183,7 +177,7 @@ fun TopBarLevel2(
     onBackClick: () -> Unit,
     onMenuShareItemSelected: () -> Unit = {},
     onMenuOpenItemSelected: (String) -> Unit = {},
-    onBookmarkClicked: () -> Unit = {},
+    onBookmarkClick: () -> Unit = {},
 ) {
     var mDisplayMenu by remember { mutableStateOf(false) }
 
@@ -198,7 +192,7 @@ fun TopBarLevel2(
 
             BookmarkToolbarIcon(
                 isFavorite = isFavorite,
-                onClick = onBookmarkClicked
+                onBookmarkClick = onBookmarkClick
             )
 
             IconButton(onClick = { mDisplayMenu = !mDisplayMenu }) {
@@ -244,12 +238,12 @@ fun TopBarLevel2(
 @Composable
 fun BookmarkToolbarIcon(
     isFavorite: Boolean = false,
-    onClick: () -> Unit,
+    onBookmarkClick: () -> Unit,
 ) {
-    IconButton(onClick = onClick) {
+    IconButton(onClick = onBookmarkClick) {
         Icon(
             imageVector =
-            if (isFavorite) Icons.Filled.Bookmark
+            if (isFavorite) Icons.TwoTone.Bookmark
             else Icons.Outlined.BookmarkBorder,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface
