@@ -10,16 +10,7 @@ suspend fun Repository.getArticleDetail(article: String): ArticleDetail = withRe
 
     val articleData = runtimeCache.articlesList.find {
         it.title == article || it.url == article
-    } ?: ArticleData(
-        title = "Article not found",
-        url = "",
-        description = "",
-        image = "",
-        text = "",
-        publishedAt = "",
-        publishedTime = 0L,
-        source = ""
-    )
+    } ?: ArticleData.getEmpty()
 
     val isFavorite = checkBookmark(articleData.url)
     val data = ArticlesListItem(articleData)
@@ -34,6 +25,30 @@ suspend fun Repository.getArticleDetail(article: String): ArticleDetail = withRe
 suspend fun Repository.getBookmarkDetail(article: String): ArticleDetail = withRepoContext {
 
     val articleData = localDb.getBookmark(article)
+
+    ArticleDetail(
+        _data = articleData,
+        isFavorite = true,
+    )
+}
+
+
+suspend fun Repository.getDetail(url: String): ArticleDetail = withRepoContext {
+
+    var articleData  = runtimeCache.articlesList.find {
+         it.url == url
+    }
+
+    if (articleData == null) {
+        articleData = try {
+            localDb.getBookmark(url)
+        } catch (e: Exception) {
+            ArticleData.getEmpty()
+        }
+    }
+
+    if (articleData == null) articleData = ArticleData.getEmpty()
+
     ArticleDetail(
         _data = articleData,
         isFavorite = true,

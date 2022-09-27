@@ -11,8 +11,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-suspend fun ApiClient.fetchNewsList(): NetworkResult<NewsApiResponse> {
-    return getResponse("")
+suspend fun ApiClient.fetchNewsList(url: String): NetworkResult<NewsApiResponse> {
+    return getResponse(url, true)
 }
+
 
 

@@ -1,4 +1,4 @@
-package com.muralex.multiplatform.android.ui
+package com.muralex.multiplatform.android.ui.components
 
 import android.os.Parcelable
 import androidx.compose.foundation.layout.*

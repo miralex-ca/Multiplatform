@@ -1,8 +1,5 @@
 package com.muralex.multiplatform.datalayer.objects
 
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
-
 data class ArticleData(
     val title: String,
     val description: String,
@@ -12,7 +9,20 @@ data class ArticleData(
     val source: String,
     val publishedAt: String,
     val publishedTime: Long,
-)
+) {
+    companion object {
+        fun getEmpty() = ArticleData(
+            title = "Article not found",
+            url = "",
+            description = "",
+            image = "",
+            text = "",
+            publishedAt = "",
+            publishedTime = 0L,
+            source = ""
+        )
+    }
+}
 
 data class ArticleDBData(
     val id: String = "",

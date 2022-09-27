@@ -15,8 +15,6 @@ data class FavoriteListState (
 data class FavoriteListItem (
     val _data : ArticleData,
 ) {
-    // in the ViewModel classes, our computed properties only do UI-formatting operations
-    // (the arithmetical operations, such as calculating a percentage, should happen in the DataLayer classes)
     val name = _data.title
     val desc = _data.description
 }

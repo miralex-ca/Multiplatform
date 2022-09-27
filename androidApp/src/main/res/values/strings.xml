@@ -5,6 +5,8 @@
     <string name="tab_home">News</string>
     <string name="tab_fav">Bookmarks</string>
 
+    <string name="title_start">"News: "</string>
+
     <string name="menu_share">Share</string>
     <string name="menu_open_source">Open source</string>
     <string name="btn_open_source">OPEN SOURCE</string>
@@ -13,9 +15,43 @@
     <string name="share_url">Hi! Check this link: \n</string>
     <string name="settings">Settings</string>
 
+    <string name="empty_list">Unable to retrieve data</string>
+
     <string name="btm_sheet_btn_close">"  Close  "</string>
     <string name="btm_sheet_btn_share">   Share  "</string>
     <string name="btm_sheet_btn_source">" Source "</string>
     <string name="btm_sheet_btn_bookmark">"Bookmark"</string>
+
+    <string name="no_mail_client">No mail client</string>
+    <string name="open_browser">Open in browser</string>
+
+    <string name="invalid_url">Invalid page URL</string>
+
+    <string-array name="countries_options_text">
+        <item>Canada</item>
+        <item>USA</item>
+        <item>United Kingdom</item>
+        <item>France</item>
+        <item>Germany</item>
+        <item>Italy</item>
+    </string-array>
+
+    <string-array name="open_from_list_options_text">
+        <item>Bottom sheet</item>
+        <item>New detail screen</item>
+    </string-array>
+
+    <string-array name="themes_options_text">
+        <item>Disabled</item>
+        <item>Enabled</item>
+        <item>System default</item>
+    </string-array>
+
+    <string-array name="apisource_options_text">
+        <item>News API</item>
+        <item>Test</item>
+    </string-array>
+
+
 
 </resources>

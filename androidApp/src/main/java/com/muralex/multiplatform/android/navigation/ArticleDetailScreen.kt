@@ -73,7 +73,7 @@ fun ArticleDetailScreen(
         ) {
             DetailContent(
                 item = articleDetail,
-                openInBrowser =  openInBrowser,
+                openInBrowser =  {openInBrowser.invoke(articleDetail._data.url)},
             )
         }
     }
@@ -82,7 +82,7 @@ fun ArticleDetailScreen(
 @Composable
 private fun DetailContent(
     item: ArticleDetail,
-    openInBrowser: (String) -> Unit = {},
+    openInBrowser: () -> Unit = {},
 ) {
     Box(
         modifier = Modifier
@@ -122,22 +122,25 @@ private fun DetailContent(
                     Text(
                         text = item._data.title,
                         fontSize = 20.sp,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Normal,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 3
                     )
                     Spacer(Modifier.height(12.dp))
+
                     Text(
                         text = item._data.publishedTime.formatToDate(),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Light,
-                        fontSize = 12.sp
+                        fontSize = 14.sp
                     )
+
                     Spacer(Modifier.height(12.dp))
                     Text(
                         text = item._data.text,
                         fontWeight = FontWeight.Light,
+                        style = MaterialTheme.typography.bodyLarge,
                         fontSize = 15.sp
                     )
                     Spacer(Modifier.height(12.dp))
@@ -148,7 +151,7 @@ private fun DetailContent(
                     ) {
 
                         TextButton(
-                            onClick = { openInBrowser.invoke(item._data.title) },
+                            onClick = openInBrowser,
                         ) {
                             Text(
                                 text = stringResource(id = R.string.btn_open_source)

@@ -8,39 +8,53 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.muralex.multiplatform.android.R
+import com.muralex.multiplatform.android.ui.components.OptionDialog
 import com.muralex.multiplatform.viewmodel.screens.appsettings.AppSettingsState
 
 @Composable
 fun AppSettingsScreen(
     pageState: AppSettingsState,
+    selectCountry: (Int) -> Unit,
+    selectThemeMode: (Int) -> Unit,
+    selectOpenFromList: (Int) -> Unit,
+    selectApiSource: (Int) -> Unit,
     exitScreen: () -> Unit,
 ) {
     AppSettingsContent(
+        pageState = pageState,
+        selectCountry = selectCountry,
+        selectThemeMode = selectThemeMode,
+        selectOpenFromList = selectOpenFromList,
+        selectApiSource = selectApiSource,
         exitScreen = exitScreen,
     )
 }
 
+
 @Composable
 fun AppSettingsContent(
+    pageState: AppSettingsState,
+    selectCountry: (Int) -> Unit,
+    selectThemeMode: (Int) -> Unit,
+    selectOpenFromList: (Int) -> Unit,
+    selectApiSource: (Int) -> Unit,
     exitScreen: () -> Unit,
 ) {
 
@@ -61,16 +75,30 @@ fun AppSettingsContent(
             enter = fadeIn(animationSpec = tween(200)),
             exit = fadeOut()
         ) {
-            AppSettingsBox()
+            AppSettingsBox(
+                pageState = pageState,
+                selectCountry = selectCountry,
+                selectThemeMode = selectThemeMode,
+                selectOpenFromList = selectOpenFromList,
+                selectApiSource = selectApiSource,
+            )
         }
     }
 }
 
 @Composable
 private fun AppSettingsBox(
-
+    pageState: AppSettingsState,
+    selectCountry: (Int) -> Unit,
+    selectThemeMode: (Int) -> Unit,
+    selectOpenFromList: (Int) -> Unit,
+    selectApiSource: (Int) -> Unit,
 ) {
-    val openDialog = remember { mutableStateOf(false) }
+
+    val modesList =  stringArrayResource(R.array.themes_options_text).toList()
+    val openFromLIst = stringArrayResource(R.array.open_from_list_options_text).toList()
+    val countriesList = stringArrayResource(R.array.countries_options_text).toList()
+    val dataSource = stringArrayResource(R.array.apisource_options_text).toList()
 
     Box(
         modifier = Modifier
@@ -89,6 +117,7 @@ private fun AppSettingsBox(
                     .padding(12.dp)
             ) {
 
+                // TODO add texts to resources
                 Text(
                     text = "Interface",
                     modifier = Modifier.padding(8.dp),
@@ -97,11 +126,23 @@ private fun AppSettingsBox(
                     fontSize = 18.sp
                 )
 
-                DarkModeSetting(openDialog)
+                OptionsWithDialog(
+                    radioOptions = modesList,
+                    title = "Select mode",
+                    summary = modesList[pageState.savedThemeMode],
+                    optionSelectedIndex = {selectThemeMode(it)},
+                    selectedIndex = pageState.savedThemeMode,
+                )
 
-                Spacer(Modifier.height(5.dp))
-
-                HomeSetting(openDialog)
+//                Spacer(Modifier.height(5.dp))
+//
+//                OptionsWithDialog(
+//                    radioOptions = openFromLIst,
+//                    title = "Select open option",
+//                    summary = openFromLIst[pageState.openFromList],
+//                    optionSelectedIndex = { selectOpenFromList(it) },
+//                    selectedIndex = pageState.openFromList,
+//                )
 
                 Spacer(Modifier.height(20.dp))
 
@@ -113,24 +154,62 @@ private fun AppSettingsBox(
                     fontSize = 18.sp
                 )
 
-                CountrySelection(openDialog)
+                OptionsWithDialog(
+                    radioOptions = countriesList,
+                    title = "Select country",
+                    summary = countriesList[pageState.sourceCountry],
+                    optionSelectedIndex = {selectCountry(it)},
+                    selectedIndex = pageState.sourceCountry,
+                )
 
                 Spacer(Modifier.height(5.dp))
 
-                RefreshData(openDialog)
+                OptionsWithDialog(
+                    radioOptions = dataSource,
+                    title = "Data source",
+                    summary = dataSource[pageState.apiDataSource],
+                    optionSelectedIndex = {selectApiSource(it)},
+                    selectedIndex = pageState.apiDataSource,
+                )
 
                 Spacer(Modifier.height(35.dp))
-
-                AlertDialogSample(openDialog = openDialog)
             }
         }
     }
 }
 
 
+@Composable
+private fun OptionsWithDialog(
+    radioOptions: List<String> = emptyList(),
+    title: String = "",
+    summary: String = "",
+    optionSelectedIndex: (Int) -> Unit,
+    selectedIndex: Int = 0,
+) {
+
+    val openDialog = remember { mutableStateOf(false) }
+
+    OptionsSetting(
+        openDialog = openDialog,
+        title = title,
+        summary = summary,
+    )
+
+    OptionDialog(
+        openDialog = openDialog,
+        selectedIndex = selectedIndex,
+        optionSelectedIndex = optionSelectedIndex,
+        radioOptions = radioOptions,
+    )
+}
 
 @Composable
-private fun DarkModeSetting(openDialog: MutableState<Boolean>) {
+private fun OptionsSetting(
+    openDialog: MutableState<Boolean>,
+    title: String = "",
+    summary: String = "",
+) {
     Column(
         modifier = Modifier
             .clickable { openDialog.value = true }
@@ -139,14 +218,14 @@ private fun DarkModeSetting(openDialog: MutableState<Boolean>) {
     ) {
 
         Text(
-            text = "Dark mode",
+            text = title,
             modifier = Modifier.padding(2.dp),
             style = MaterialTheme.typography.bodyLarge,
             fontSize = 18.sp
         )
 
         Text(
-            text = "System default",
+            text = "Current: $summary",
             modifier = Modifier
                 .padding(2.dp)
                 .alpha(0.8F),
@@ -155,80 +234,6 @@ private fun DarkModeSetting(openDialog: MutableState<Boolean>) {
         )
     }
 }
-
-
-@Composable
-private fun HomeSetting(openDialog: MutableState<Boolean>) {
-    Column(
-        modifier = Modifier
-            .clickable { openDialog.value = true }
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-
-        Text(
-            text = "Click from the main list",
-            modifier = Modifier.padding(2.dp),
-            style = MaterialTheme.typography.bodyLarge,
-            fontSize = 18.sp
-        )
-
-        Text(
-            text = "Display news in a bottom sheet",
-            modifier = Modifier
-                .padding(2.dp)
-                .alpha(0.8F),
-            style = MaterialTheme.typography.bodyLarge,
-            fontSize = 14.sp
-        )
-    }
-}
-
-@Composable
-private fun CountrySelection(openDialog: MutableState<Boolean>) {
-    Column(
-        modifier = Modifier
-            .clickable { openDialog.value = true }
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-
-        Text(
-            text = "Select country",
-            modifier = Modifier.padding(2.dp),
-            style = MaterialTheme.typography.bodyLarge,
-            fontSize = 18.sp
-        )
-
-        Text(
-            text = "Current: Canada",
-            modifier = Modifier
-                .padding(2.dp)
-                .alpha(0.8F),
-            style = MaterialTheme.typography.bodyLarge,
-            fontSize = 14.sp
-        )
-    }
-}
-
-@Composable
-private fun RefreshData(openDialog: MutableState<Boolean>) {
-    Column(
-        modifier = Modifier
-            .clickable { openDialog.value = true }
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-
-        Text(
-            text = "App data updates",
-            modifier = Modifier.padding(2.dp),
-            style = MaterialTheme.typography.bodyLarge,
-            fontSize = 18.sp
-        )
-    }
-}
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -237,7 +242,6 @@ fun TopBarSettings(
     title: String = "",
     onBackClick: () -> Unit,
 ) {
-
     TopAppBar(
         title = { Text(text = title, fontSize = 18.sp) },
         navigationIcon = {
@@ -249,135 +253,4 @@ fun TopBarSettings(
 }
 
 
-@Composable
-fun AlertDialogSample(
-    openDialog: MutableState<Boolean>,
-) {
-    if (openDialog.value) {
-        NoPaddingAlertDialog(
-            titleText = "Select country",
-
-            content = {
-                RadioGroupSample(
-                    radioOptions = listOf(
-                        "Dark mode", "Light mode", "System default"
-                    ),
-                    onSelect = { openDialog.value = false },
-                )
-            },
-
-            onDismissRequest = { openDialog.value = false },
-            confirmButton = {
-                TextButton(
-                    onClick = { openDialog.value = false }
-                ) {
-                    Text(
-                        text = "CANCEL",
-                        fontSize = 15.sp,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-            }
-        )
-    }
-}
-
-@Composable
-fun RadioGroupSample(
-    radioOptions: List<String> = emptyList(),
-    onSelect: () -> Unit = {},
-) {
-
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
-    Column(Modifier.selectableGroup()) {
-        radioOptions.forEach { text ->
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .selectable(
-                        selected = (text == selectedOption),
-                        onClick = {
-                            onOptionSelected(text)
-                            onSelect()
-                        },
-                        role = Role.RadioButton
-                    )
-                    .padding(horizontal = 24.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    selected = (text == selectedOption),
-                    onClick = null // null recommended for accessibility with screenreaders
-                )
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-            }
-        }
-    }
-}
-
-
-@Composable
-fun NoPaddingAlertDialog(
-    onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier,
-    titleText: String = "",
-    title: @Composable (() -> Unit)? = null,
-    content: @Composable (() -> Unit)? = null,
-    confirmButton: @Composable () -> Unit,
-    dismissButton: @Composable (() -> Unit)? = null,
-    shape: Shape = MaterialTheme.shapes.large,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
-    contentColor: Color = contentColorFor(backgroundColor),
-    properties: DialogProperties = DialogProperties(),
-) {
-    Dialog(
-        onDismissRequest = onDismissRequest,
-        properties = properties
-    ) {
-        Surface(
-            modifier = modifier,
-            shape = shape,
-            color = backgroundColor,
-            contentColor = contentColor
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                if (titleText.isEmpty()) {
-                    title?.let {
-                        CompositionLocalProvider {
-                            val textStyle = MaterialTheme.typography.titleLarge
-                            ProvideTextStyle(textStyle, it)
-                        }
-                    }
-                } else {
-                    Text(
-                        text = titleText,
-                        modifier = Modifier.padding(vertical = 20.dp, horizontal = 24.dp),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontSize = 20.sp
-                    )
-                }
-                content?.invoke()
-
-                Box(Modifier.fillMaxWidth()) {
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(vertical = 8.dp, horizontal = 14.dp),
-                    ) {
-                        dismissButton?.invoke()
-                        confirmButton()
-                    }
-                }
-            }
-        }
-    }
-}
 

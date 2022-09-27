@@ -1,6 +1,7 @@
 package com.muralex.multiplatform.android.navigation
 
 import android.annotation.SuppressLint
+import android.os.Parcelable
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,8 +34,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.muralex.multiplatform.android.R
-import com.muralex.multiplatform.android.ui.BottomData
-import com.muralex.multiplatform.android.ui.BottomSheet
+import com.muralex.multiplatform.android.ui.components.BottomData
+import com.muralex.multiplatform.android.ui.components.BottomSheet
+import com.muralex.multiplatform.android.util.ContactActions
 import com.muralex.multiplatform.viewmodel.Navigation
 import com.muralex.multiplatform.viewmodel.ScreenIdentifier
 import com.muralex.multiplatform.viewmodel.screens.Level1Navigation
@@ -44,6 +47,7 @@ import com.muralex.multiplatform.viewmodel.screens.webviewdetail.ArticleWebviewP
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
 @Composable
 fun Navigation.Router() {
@@ -75,11 +79,9 @@ fun Navigation.OnePane(
     saveableStateHolder: SaveableStateHolder,
 ) {
 
-    val sheetState = rememberModalBottomSheetState( initialValue = ModalBottomSheetValue.Hidden)
-
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
-
-    val bottomData = rememberSaveable {mutableStateOf(BottomData())}
+    val bottomData = rememberSaveable { mutableStateOf(BottomData()) }
 
     BackHandler(sheetState.isVisible) {
         closeButtonSheet(coroutineScope, sheetState)
@@ -99,11 +101,12 @@ fun Navigation.OnePane(
                     coroutineScope.launch {
                         closeButtonSheet(coroutineScope, sheetState)
                         delay(100)
-                        navigate(Screen.ArticleWebview, ArticleWebviewParams(bottomData.value.title))
+                        navigate(Screen.ArticleWebview,
+                            ArticleWebviewParams(bottomData.value.url))
                     }
                 },
                 onShareClick = {
-                    share(shareContext, bottomData.value.title)
+                    ContactActions.shareURL(shareContext, bottomData.value.url)
                 },
                 onBookmarkClick = {
                     events.setBookmark(bottomData.value.url)
@@ -123,6 +126,8 @@ fun Navigation.OnePane(
             .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
 
+            val screenData = rememberSaveable { mutableStateOf(ScreenData()) }
+
             Scaffold(
                 topBar = {
                     when (currentScreenIdentifier.screen) {
@@ -130,9 +135,22 @@ fun Navigation.OnePane(
                         Screen.FavoriteArticlesList,
                         -> {
                             TopBar(
-                                title = getTitle(currentScreenIdentifier),
+                                title = screenData.value.title,
                                 onSettingsClick = {
                                     navigate(Screen.AppSettings, AppSettingsParams("Settings"))
+                                },
+                            )
+                        }
+                        Screen.ArticleWebview,
+                        -> {
+                            ArticleWebViewTopBar(
+                                title = screenData.value.title,
+                                onBackClick = { exitScreen() },
+                                onMenuShareItemSelected = {
+                                    ContactActions.shareURL(shareContext, screenData.value.url)
+                                },
+                                onMenuOpenItemSelected = {
+                                    ContactActions.openUrl(shareContext, screenData.value.url)
                                 },
                             )
                         }
@@ -154,7 +172,6 @@ fun Navigation.OnePane(
                                             sheetState.animateTo(ModalBottomSheetValue.Expanded)
                                         }
                                     }
-
                                     bottomData.value = BottomData(
                                         title = bottomSheetStateData.data?.title ?: "",
                                         text = bottomSheetStateData.data?.description ?: "",
@@ -162,8 +179,8 @@ fun Navigation.OnePane(
                                         url = bottomSheetStateData.data?.url ?: "",
                                         isFavorite = bottomSheetStateData.isFavorite
                                     )
-
-                                }
+                                },
+                                screenData = screenData
 
                             )
                         }
@@ -241,6 +258,12 @@ fun TopBar(
         }
     )
 }
+
+@Parcelize
+data class ScreenData(
+    val title: String = String(),
+    val url: String = String(),
+) : Parcelable
 
 
 

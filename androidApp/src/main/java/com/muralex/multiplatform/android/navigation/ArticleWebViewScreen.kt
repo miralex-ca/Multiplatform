@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 
 import android.util.Log
+import android.webkit.URLUtil
 import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,31 +16,29 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.web.AccompanistWebViewClient
-import com.google.accompanist.web.WebView
-import com.google.accompanist.web.rememberWebViewNavigator
-import com.google.accompanist.web.rememberWebViewState
+import com.google.accompanist.web.*
 import com.muralex.multiplatform.android.R
 import com.muralex.multiplatform.viewmodel.screens.webviewdetail.ArticleWebviewData
 import com.muralex.multiplatform.viewmodel.screens.webviewdetail.ArticleWebviewState
 import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun ArticleWebViewScreen(
     articleState: ArticleWebviewState,
-    exitScreen: ()-> Unit
+    screenData: MutableState<ScreenData>,
 ) {
+    screenData.value = ScreenData(
+        title = articleState.articleInfo._data.source,
+        url = articleState.articleInfo._data.url
+    )
     Column {
-        ArticleWebViewTopBar(
-            onBackClick = exitScreen
-        )
         ArticleWebViewContent(articleState.articleInfo)
     }
 }
@@ -62,20 +61,61 @@ fun LoadWebUrl(url: String) {
 
     val state = rememberWebViewState(url = url)
     val navigator = rememberWebViewNavigator()
+    val loaderVisibility = remember { mutableStateOf(true)}
 
-    val visibility = remember { mutableStateOf(true)}
+    if (  URLUtil.isValidUrl(url) ) {
+        WebClientBox(
+            visibility = loaderVisibility,
+            state = state,
+            navigator = navigator
+        )
+    } else {
 
-    LaunchedEffect(Unit) {
-        delay(5.seconds)
-
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            loaderVisibility.value = false
+            Text(
+                text = stringResource(id = R.string.invalid_url),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier
+                    .alpha(0.6f)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp
+            )
+        }
     }
 
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        contentAlignment = Alignment.Center
+    ) {
+        if (loaderVisibility.value) {
+            CircularProgressIndicator(
+            )
+        }
+    }
+}
+
+@Composable
+private fun WebClientBox(
+    visibility: MutableState<Boolean>,
+    state: WebViewState,
+    navigator: WebViewNavigator,
+) {
     val webClient = remember {
         object : AccompanistWebViewClient() {
             override fun onPageStarted(
                 view: WebView?,
                 url: String?,
-                favicon: Bitmap?
+                favicon: Bitmap?,
             ) {
                 super.onPageStarted(view, url, favicon)
                 Log.d("Accompanist WebView", "Page started loading for $url")
@@ -88,25 +128,21 @@ fun LoadWebUrl(url: String) {
         }
     }
 
-    WebView(
-        state = state,
-        navigator = navigator,
-        onCreated = { webView ->
-            webView.settings.javaScriptEnabled = true
-        },
-        client = webClient
-    )
+    val build = remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        delay(500)
+        build.value = true
+    }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-        contentAlignment = Alignment.Center
-    ) {
-        if (visibility.value) {
-            CircularProgressIndicator(
-            )
-        }
+    if (build.value) {
+        WebView(
+            state = state,
+            navigator = navigator,
+            onCreated = { webView ->
+                webView.settings.javaScriptEnabled = true
+            },
+            client = webClient
+        )
     }
 }
 
@@ -129,7 +165,7 @@ fun  ArticleWebViewTopBar(
         },
         actions = {
             OpenBrowserToolbarIcon(
-                onClick = {}
+                onClick = onMenuOpenItemSelected
             )
 
             IconButton(onClick = { mDisplayMenu = !mDisplayMenu }) {
@@ -155,13 +191,14 @@ fun  ArticleWebViewTopBar(
                         )
                     }
                 )
+
                 DropdownMenuItem(
                     onClick = {
                         onMenuOpenItemSelected.invoke()
                         mDisplayMenu = false
                     },
                     text = {
-                        Text(text = stringResource(id = R.string.menu_open_source),
+                        Text(text = stringResource(id = R.string.open_browser),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
                         )
@@ -179,7 +216,7 @@ fun OpenBrowserToolbarIcon(
     IconButton(onClick = onClick) {
         Icon(
             imageVector = Icons.Outlined.Logout,
-            contentDescription = null,
+            contentDescription = stringResource(id = R.string.open_browser),
             tint = MaterialTheme.colorScheme.onSurface
         )
     }

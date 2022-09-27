@@ -9,10 +9,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -20,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.muralex.multiplatform.android.R
 import com.muralex.multiplatform.android.util.formatToDate
 import com.muralex.multiplatform.viewmodel.screens.articleslist.ArticlesListItem
 import com.muralex.multiplatform.viewmodel.screens.articleslist.ArticlesListState
@@ -27,11 +31,26 @@ import com.muralex.multiplatform.viewmodel.screens.articleslist.BottomSheetState
 
 @Composable
 fun ArticlesListScreen(
+    screenData: MutableState<ScreenData>,
     countriesListState: ArticlesListState,
     openBottomSheet: (BottomSheetStateData) -> Unit,
     onListItemClick: (String) -> Unit,
     onBottomSheetOpen: () -> Unit,
 ) {
+
+    val title = if (countriesListState.selectedCountryIndex == -1)  {
+        stringResource(id = R.string.tab_home)
+    } else {
+        val titleStart = stringResource(id = R.string.title_start)
+        val countryText =
+            stringArrayResource(R.array.countries_options_text)[countriesListState.selectedCountryIndex]
+        titleStart + countryText
+    }
+
+    screenData.value = ScreenData(
+        title = title,
+    )
+
     if (countriesListState.isLoading) {
         LoadingScreen()
     } else {
@@ -46,7 +65,7 @@ fun ArticlesListScreen(
         if (countriesListState.articlesListItems.isEmpty()) {
 
             Text(
-                text = "empty list",
+                text = stringResource(id = R.string.empty_list),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .padding(top = 30.dp)
@@ -64,7 +83,7 @@ fun ArticlesListScreen(
                     itemContent = { item ->
                         ArticleListItem(
                             item = item,
-                            onItemClick  = {
+                            onItemClick = {
                                 onListItemClick(item._data.url)
                             },
                         )
@@ -124,9 +143,11 @@ fun ArticleListItem(
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 3
                     )
+
                     Spacer(Modifier.height(6.dp))
+
                     Text(
-                        text = item._data.publishedTime.formatToDate(),
+                        text = "${item._data.source.uppercase()}  –  ${item._data.publishedTime.formatToDate()}",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Light,
                         fontSize = 12.sp

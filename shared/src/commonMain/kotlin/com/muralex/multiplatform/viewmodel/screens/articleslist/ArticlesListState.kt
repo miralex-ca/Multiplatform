@@ -8,7 +8,8 @@ import com.muralex.multiplatform.viewmodel.ScreenState
 data class ArticlesListState (
     val isLoading : Boolean = false,
     val articlesListItems : List<ArticlesListItem> = emptyList(),
-    val bottomSheetStateData: BottomSheetStateData = BottomSheetStateData()
+    val bottomSheetStateData: BottomSheetStateData = BottomSheetStateData(),
+    val selectedCountryIndex: Int = 0,
 ): ScreenState
 
 /********** property classes **********/

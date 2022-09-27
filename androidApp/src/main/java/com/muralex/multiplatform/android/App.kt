@@ -20,7 +20,6 @@ class DKMPApp : Application() {
         val appLifecycleObserver = AppLifecycleObserver(model)
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
     }
-
 }
 
 class AppLifecycleObserver (private val model: DKMPViewModel) : LifecycleObserver {

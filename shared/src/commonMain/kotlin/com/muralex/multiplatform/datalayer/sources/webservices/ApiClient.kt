@@ -1,6 +1,7 @@
 package com.muralex.multiplatform.datalayer.sources.webservices
 
 import com.muralex.multiplatform.datalayer.objects.NetworkResult
+import com.muralex.multiplatform.datalayer.sources.localsettings.SourceCountry
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -14,12 +15,29 @@ import kotlinx.serialization.json.Json
 
 class ApiClient {
 
-    // TODO check url
     // 6a509f59b2034acaa5e5318a917fba34
-    //b7122b5c5f8948eda9715867b6240ce6
-    val baseUrl =
-        //"https://newsapi.org/v2/top-headlines?country=ca&pageSize=20&apiKey=6a509f59b2034acaa5e5318a917fba34"
-        "https://newsapi.amiron.repl.co/data.json"
+    // b7122b5c5f8948eda9715867b6240ce6
+    // //"https://newsapi.org/v2/top-headlines?country=ca&pageSize=20&apiKey=6a509f59b2034acaa5e5318a917fba34"
+    // test "https://newsapi.amiron.repl.co/" or https://newsapi.amiron.repl.co/data_ca.json
+
+    companion object {
+        private const val testBasUrl = "https://newsapi.amiron.repl.co/"
+        const val baseApiUrl = "https://newsapi.org/v2/"
+        val endpoint = "top-headlines?"
+        val countryParam = "country="
+        val pageSizeParam = "pageSize=30"
+        val apiKeyParam = "apiKey=6a509f59b2034acaa5e5318a917fba34"
+
+        fun getTestUrl() = testBasUrl
+        fun getBaseUrl() = baseApiUrl
+
+        fun getNewsApiEndpointByCountry(country: String) =
+            "$endpoint$countryParam$country&$pageSizeParam&$apiKeyParam"
+
+        fun getTestApiEndpointByCountry(country: String) =
+            "data_$country.json"
+
+    }
 
     val client = HttpClient {
 
@@ -45,7 +63,7 @@ class ApiClient {
         val url = if (isPath) {
             endpoint
         } else {
-            baseUrl + endpoint
+            getBaseUrl() + endpoint
         }
 
         return try {
