@@ -1,13 +1,9 @@
 package com.muralex.multiplatform.android
 
 import android.app.Application
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.*
 import com.muralex.multiplatform.shared.viewmodel.getAndroidInstance
 import com.muralex.multiplatform.viewmodel.DKMPViewModel
-
 
 class DKMPApp : Application() {
 
@@ -22,18 +18,23 @@ class DKMPApp : Application() {
     }
 }
 
-class AppLifecycleObserver (private val model: DKMPViewModel) : LifecycleObserver {
+class AppLifecycleObserver (private val model: DKMPViewModel) : DefaultLifecycleObserver {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onEnterForeground() {
-        if (model.stateFlow.value.recompositionIndex > 0) { // not calling at app startup
+    private var isInBackground: Boolean = false
+
+
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
+        if (isInBackground && model.stateFlow.value.recompositionIndex > 0) { // not callign at app startup
             model.navigation.onReEnterForeground()
+            isInBackground = false
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun onEnterBackground() {
+    override fun onStop(owner: LifecycleOwner) {
         model.navigation.onEnterBackground()
+        isInBackground = true
+        super.onStop(owner)
     }
 
 }

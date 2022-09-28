@@ -1,8 +1,10 @@
 package com.muralex.multiplatform.android.ui.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,6 +19,7 @@ import androidx.compose.ui.window.DialogProperties
 
 @Composable
 fun OptionDialog(
+    dialogTitle: String = "",
     radioOptions:  List<String> = emptyList(),
     openDialog: MutableState<Boolean>,
     optionSelectedIndex: (Int) -> Unit,
@@ -25,9 +28,8 @@ fun OptionDialog(
 
     if (openDialog.value) {
         NoPaddingAlertDialog(
-            titleText = "Select country",
+            titleText = dialogTitle,
             content = {
-
                 RadioGroupSample(
                     radioOptions = radioOptions,
                     onOptionSelect = {
@@ -65,7 +67,9 @@ fun RadioGroupSample(
 
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[selectedOptionIndex]) }
 
-    Column(Modifier.selectableGroup()) {
+    Column(
+        Modifier.selectableGroup()
+    ) {
         radioOptions.forEachIndexed  {index, text ->
             Row(
                 Modifier
@@ -143,7 +147,10 @@ fun NoPaddingAlertDialog(
                 }
                 content?.invoke()
 
-                Box(Modifier.fillMaxWidth()) {
+                Box(
+                    Modifier.fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                ) {
                     Row(
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier.fillMaxWidth()

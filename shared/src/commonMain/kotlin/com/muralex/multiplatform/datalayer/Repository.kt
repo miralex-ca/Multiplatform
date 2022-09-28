@@ -19,7 +19,7 @@ class Repository(
 
     internal val webservices by lazy { ApiClient() }
     internal val runtimeCache get() = CacheObjects
-    internal val localSettings by lazy { MySettings(settings) }
+    val localSettings by lazy { MySettings(settings) }
     internal val localDb by lazy { NewsDb(sqlDriver) }
 
     suspend fun <T> withRepoContext(block: suspend () -> T): T {

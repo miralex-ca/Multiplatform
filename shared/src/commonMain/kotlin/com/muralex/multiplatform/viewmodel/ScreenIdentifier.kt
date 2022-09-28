@@ -31,7 +31,6 @@ class ScreenIdentifier private constructor(
             }
             return null
         }
-
     }
 
     private fun returnURI() : String {

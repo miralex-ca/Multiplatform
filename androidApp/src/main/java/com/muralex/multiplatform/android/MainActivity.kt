@@ -8,7 +8,6 @@ import com.muralex.multiplatform.android.theme.MyApplicationTheme
 import com.muralex.multiplatform.android.ui.MainComposable
 
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,9 +16,7 @@ class MainActivity : ComponentActivity() {
         val model = (application as DKMPApp).model
 
         setContent {
-            MyApplicationTheme {
-                MainComposable(model)
-            }
+            MainComposable(model)
         }
     }
 }

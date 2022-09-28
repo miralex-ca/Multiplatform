@@ -1,16 +1,10 @@
 package com.muralex.multiplatform.datalayer.functions
 
 import com.muralex.multiplatform.datalayer.Repository
-import com.muralex.multiplatform.datalayer.objects.ArticleData
-import com.muralex.multiplatform.datalayer.sources.localdb.checkBookmark
-import com.muralex.multiplatform.datalayer.sources.localdb.deleteBookmark
-import com.muralex.multiplatform.datalayer.sources.localdb.getBookmarksList
-import com.muralex.multiplatform.datalayer.sources.localdb.insertBookmark
 import com.muralex.multiplatform.datalayer.sources.localsettings.ApiDataSource
 import com.muralex.multiplatform.datalayer.sources.localsettings.OpenFromList
 import com.muralex.multiplatform.datalayer.sources.localsettings.SourceCountry
 import com.muralex.multiplatform.datalayer.sources.localsettings.ThemeMode
-import com.muralex.multiplatform.viewmodel.screens.favoriteslist.FavoriteListItem
 
 suspend fun Repository.getThemeModeIndex(): Int = withRepoContext {
     val savedThemeMode = localSettings.savedThemeMode

@@ -116,7 +116,6 @@ fun Navigation.OnePane(
         scrimColor = Color.Transparent,
         sheetShape = RoundedCornerShape(24.dp, 24.dp, 0.dp, 0.dp),
         sheetBackgroundColor = MaterialTheme.colorScheme.surfaceVariant,
-        sheetContentColor = Color.Cyan,
         modifier = Modifier.fillMaxSize(),
         sheetElevation = 20.dp,
     ) {

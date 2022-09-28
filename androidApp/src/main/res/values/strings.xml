@@ -42,8 +42,8 @@
     </string-array>
 
     <string-array name="themes_options_text">
-        <item>Disabled</item>
-        <item>Enabled</item>
+        <item>Light</item>
+        <item>Dark</item>
         <item>System default</item>
     </string-array>
 

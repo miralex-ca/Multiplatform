@@ -128,7 +128,7 @@ private fun AppSettingsBox(
 
                 OptionsWithDialog(
                     radioOptions = modesList,
-                    title = "Select mode",
+                    title = "App theme mode",
                     summary = modesList[pageState.savedThemeMode],
                     optionSelectedIndex = {selectThemeMode(it)},
                     selectedIndex = pageState.savedThemeMode,
@@ -197,6 +197,7 @@ private fun OptionsWithDialog(
     )
 
     OptionDialog(
+        dialogTitle = title,
         openDialog = openDialog,
         selectedIndex = selectedIndex,
         optionSelectedIndex = optionSelectedIndex,

@@ -34,7 +34,6 @@ import com.muralex.multiplatform.android.util.formatToDate
 import com.muralex.multiplatform.viewmodel.screens.favoriteslist.FavoriteListItem
 import com.muralex.multiplatform.viewmodel.screens.favoriteslist.FavoriteListState
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FavoriteListScreen(
     screenData: MutableState<ScreenData>,

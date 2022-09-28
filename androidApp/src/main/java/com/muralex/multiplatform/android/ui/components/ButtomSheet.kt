@@ -78,12 +78,14 @@ fun BottomSheet(
             Text(
                 text = bottomData.title,
                 style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 18.sp
             )
             Spacer(modifier = Modifier.height(14.dp))
             Text(
                 text = bottomData.text,
                 style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal
             )

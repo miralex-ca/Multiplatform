@@ -25,7 +25,7 @@ enum class ThemeMode {
     SYSTEM;
 
     companion object {
-        fun defaultStr() = LIGHT.name
+        fun defaultStr() = SYSTEM.name
     }
 }
 
@@ -47,7 +47,7 @@ enum class SourceCountry {
     IT;
 
     companion object {
-        fun defaultStr() = SourceCountry.CA.name
+        fun defaultStr() = CA.name
     }
 }
 
